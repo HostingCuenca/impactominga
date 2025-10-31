@@ -1,0 +1,44 @@
+{
+  "prizes": [
+    {
+      "name": "Toyota Corolla 2024",
+      "description": "Toyota Corolla 2024 0km completamente equipado",
+      "imageUrl": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800",
+      "unlockThreshold": 8000,
+      "unlockStatus": "locked",
+      "displayOrder": 1
+    },
+    {
+      "name": "iPhone 15 Pro Max",
+      "description": "iPhone 15 Pro Max 256GB",
+      "imageUrl": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800",
+      "unlockThreshold": 5000,
+      "unlockStatus": "locked",
+      "displayOrder": 2
+    },
+    {
+      "name": "MacBook Air M3",
+      "description": "MacBook Air M3 con 16GB RAM",
+      "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800",
+      "unlockThreshold": 3000,
+      "unlockStatus": "locked",
+      "displayOrder": 3
+    },
+    {
+      "name": "PlayStation 5",
+      "description": "PlayStation 5 + 2 Controles",
+      "imageUrl": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800",
+      "unlockThreshold": 1500,
+      "unlockStatus": "locked",
+      "displayOrder": 4
+    },
+    {
+      "name": "Smart TV 65\"",
+      "description": "Smart TV Samsung 65 pulgadas 4K",
+      "imageUrl": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800",
+      "unlockThreshold": 500,
+      "unlockStatus": "unlocked",
+      "displayOrder": 5
+    }
+  ]
+}

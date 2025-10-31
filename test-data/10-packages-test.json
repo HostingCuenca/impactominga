@@ -1,0 +1,35 @@
+{
+  "packages": [
+    {
+      "quantity": 1,
+      "price": 1.00,
+      "isMostPopular": false,
+      "displayOrder": 1,
+      "discountPercentage": 0
+    },
+    {
+      "quantity": 5,
+      "price": 4.50,
+      "isMostPopular": true,
+      "displayOrder": 2,
+      "discountPercentage": 10,
+      "originalPrice": 5.00
+    },
+    {
+      "quantity": 10,
+      "price": 8.00,
+      "isMostPopular": false,
+      "displayOrder": 3,
+      "discountPercentage": 20,
+      "originalPrice": 10.00
+    },
+    {
+      "quantity": 20,
+      "price": 14.00,
+      "isMostPopular": false,
+      "displayOrder": 4,
+      "discountPercentage": 30,
+      "originalPrice": 20.00
+    }
+  ]
+}

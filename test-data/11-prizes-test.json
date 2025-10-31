@@ -1,0 +1,49 @@
+{
+  "prizes": [
+    {
+      "name": "iPhone 15 Pro",
+      "description": "Smartphone de última generación",
+      "productName": "iPhone 15 Pro 256GB",
+      "imageUrl": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500",
+      "unlockThreshold": 1000,
+      "unlockStatus": "locked",
+      "displayOrder": 1
+    },
+    {
+      "name": "AirPods Pro",
+      "description": "Auriculares inalámbricos premium",
+      "productName": "AirPods Pro (2da Gen)",
+      "imageUrl": "https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=500",
+      "unlockThreshold": 2500,
+      "unlockStatus": "locked",
+      "displayOrder": 2
+    },
+    {
+      "name": "MacBook Air M3",
+      "description": "Laptop ultradelgada y potente",
+      "productName": "MacBook Air 13 M3 256GB",
+      "imageUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
+      "unlockThreshold": 5000,
+      "unlockStatus": "locked",
+      "displayOrder": 3
+    },
+    {
+      "name": "PlayStation 5",
+      "description": "Consola de videojuegos next-gen",
+      "productName": "PS5 Standard Edition",
+      "imageUrl": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=500",
+      "unlockThreshold": 7500,
+      "unlockStatus": "locked",
+      "displayOrder": 4
+    },
+    {
+      "name": "Toyota Corolla 2024",
+      "description": "Vehículo principal del sorteo",
+      "productName": "Toyota Corolla 2024 0km",
+      "imageUrl": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=500",
+      "unlockThreshold": 10000,
+      "unlockStatus": "locked",
+      "displayOrder": 5
+    }
+  ]
+}

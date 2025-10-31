@@ -1,0 +1,12 @@
+{
+  "title": "SORTEO MACBOOK PRO M3",
+  "description": "MacBook Pro 14 pulgadas con chip M3 Pro. El poder que necesitas para crear sin límites.",
+  "status": "completed",
+  "activityNumber": 38,
+  "totalTickets": 3000,
+  "ticketPrice": 1.50,
+  "startDate": "2025-09-01T00:00:00Z",
+  "endDate": "2025-10-15T23:59:59Z",
+  "drawDate": "2025-10-16T20:00:00Z",
+  "bannerUrl": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=1200"
+}

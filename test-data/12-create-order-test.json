@@ -1,0 +1,25 @@
+{
+  "userId": "REPLACE_WITH_CUSTOMER_USER_ID",
+  "customerEmail": "cliente1@example.com",
+  "customerFirstName": "Juan",
+  "customerLastName": "Pérez",
+  "customerPhone": "+593987654321",
+  "customerIdType": "cedula",
+  "customerIdNumber": "1234567890",
+  "shippingAddress": "Av. Principal 123",
+  "shippingCity": "Quito",
+  "shippingProvince": "Pichincha",
+  "subtotal": 4.50,
+  "tax": 0.54,
+  "total": 5.04,
+  "paymentMethod": "bank_transfer",
+  "customerNotes": "Por favor confirmar cuando reciban el pago",
+  "items": [
+    {
+      "raffleId": "REPLACE_WITH_RAFFLE_ID",
+      "quantity": 5,
+      "unitPrice": 0.90,
+      "subtotal": 4.50
+    }
+  ]
+}
