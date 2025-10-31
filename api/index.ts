@@ -1,22 +1,21 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import express from 'express';
 import cors from 'cors';
 import serverless from 'serverless-http';
 
-// Import all route handlers
-import { handleDemo } from '../server/routes/demo.js';
-import { handleDbTest } from '../server/routes/db-test.js';
-import { handleRegister, handleLogin, handleGetProfile, verifyToken } from '../server/routes/auth.js';
-import { getRaffles, getRaffleById, getRafflePackages, getRafflePrizes } from '../server/routes/raffles.js';
-import { createRaffle, createPackages, createPrizes, updateRaffle, updateRaffleStatus, deleteRaffle, updatePackage, deletePackage, updatePrize, deletePrize, generateTickets, assignWinnersToPrizes } from '../server/routes/raffles-write.js';
-import { smartCheckout, completeCheckoutWithPassword, completeCheckoutWithLogin, getOrders, getOrderById, updateOrderStatus, updateOrder, deleteOrder, uploadReceipt, uploadReceiptMiddleware, getMyOrders } from '../server/routes/orders.js';
-import { requestPasswordReset, resetPassword } from '../server/routes/password-reset.js';
-import { requireAdmin } from '../server/middleware/requireAdmin.js';
-import { getTickets } from '../server/routes/tickets.js';
-import { getRevealedPrizes, getMyPrizes } from '../server/routes/prizes.js';
-import { getUsers, getUserById, updateUser, updateUserStatus, updateUserRole, deleteUser, getUserStats } from '../server/routes/users.js';
-import { getSettings, updateSetting, createSetting, deleteSetting } from '../server/routes/settings.js';
-import { getDashboardStats, getRecentActivity, getSalesChart } from '../server/routes/dashboard.js';
+// Import all route handlers (without .js extension for TypeScript)
+import { handleDemo } from '../server/routes/demo';
+import { handleDbTest } from '../server/routes/db-test';
+import { handleRegister, handleLogin, handleGetProfile, verifyToken } from '../server/routes/auth';
+import { getRaffles, getRaffleById, getRafflePackages, getRafflePrizes } from '../server/routes/raffles';
+import { createRaffle, createPackages, createPrizes, updateRaffle, updateRaffleStatus, deleteRaffle, updatePackage, deletePackage, updatePrize, deletePrize, generateTickets, assignWinnersToPrizes } from '../server/routes/raffles-write';
+import { smartCheckout, completeCheckoutWithPassword, completeCheckoutWithLogin, getOrders, getOrderById, updateOrderStatus, updateOrder, deleteOrder, uploadReceipt, uploadReceiptMiddleware, getMyOrders } from '../server/routes/orders';
+import { requestPasswordReset, resetPassword } from '../server/routes/password-reset';
+import { requireAdmin } from '../server/middleware/requireAdmin';
+import { getTickets } from '../server/routes/tickets';
+import { getRevealedPrizes, getMyPrizes } from '../server/routes/prizes';
+import { getUsers, getUserById, updateUser, updateUserStatus, updateUserRole, deleteUser, getUserStats } from '../server/routes/users';
+import { getSettings, updateSetting, createSetting, deleteSetting } from '../server/routes/settings';
+import { getDashboardStats, getRecentActivity, getSalesChart } from '../server/routes/dashboard';
 
 const app = express();
 
