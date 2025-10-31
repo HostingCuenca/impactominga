@@ -31,7 +31,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ORDER BY created_at DESC
     `);
 
-    res.status(200).json(result.rows);
+    res.status(200).json({
+      success: true,
+      data: result.rows
+    });
   } catch (error: any) {
     console.error('Error fetching raffles:', error);
     res.status(500).json({
