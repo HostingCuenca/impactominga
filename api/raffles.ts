@@ -1,10 +1,30 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { query } from './_utils/db';
+import { Pool } from 'pg';
+
+let pool: Pool | null = null;
+
+function getDB() {
+  if (!pool) {
+    pool = new Pool({
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '5432'),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+      max: 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+    });
+  }
+  return pool;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    // Query directo a la base de datos usando la utilidad compartida
-    const result = await query(`
+    const db = getDB();
+
+    const result = await db.query(`
       SELECT id, title, description, status, draw_date, created_at
       FROM raffles
       WHERE status IN ('draft', 'active', 'completed')
