@@ -66,9 +66,14 @@ export default function Cart() {
                         <h3 className="font-oswald text-xl font-bold text-black mb-2">
                           {item.raffleTitle}
                         </h3>
-                        <p className="text-gray-600 font-raleway">
-                          {item.packageName} · ${item.price.toFixed(2)} por paquete
-                        </p>
+                        <div className="flex items-center gap-2 text-gray-600 font-raleway">
+                          <span className="bg-[#d4af37] text-black px-3 py-1 rounded-full font-oswald font-bold text-sm">
+                            {item.ticketCount} números
+                          </span>
+                          <span>·</span>
+                          <span className="font-bold text-black">${item.price.toFixed(2)}</span>
+                          <span>por paquete</span>
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-4">
@@ -118,21 +123,15 @@ export default function Cart() {
                     RESUMEN DE COMPRA
                   </h2>
 
-                  <div className="space-y-4 border-b border-gray-200 pb-6 mb-6">
-                    <div className="flex justify-between">
-                      <p className="text-gray-600 font-raleway">Subtotal:</p>
-                      <p className="font-oswald font-bold">${subtotal.toFixed(2)}</p>
+                  <div className="space-y-4 mb-8">
+                    <div className="flex justify-between items-center py-4 border-b border-gray-200">
+                      <p className="font-oswald text-xl font-bold">Total a Pagar:</p>
+                      <p className="font-oswald text-3xl font-bold text-[#d4af37]">
+                        ${subtotal.toFixed(2)}
+                      </p>
                     </div>
-                    <div className="flex justify-between">
-                      <p className="text-gray-600 font-raleway">IVA (12%):</p>
-                      <p className="font-oswald font-bold">${tax.toFixed(2)}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between mb-8">
-                    <p className="font-oswald text-lg font-bold">Total:</p>
-                    <p className="font-oswald text-2xl font-bold text-[#d4af37]">
-                      ${total.toFixed(2)}
+                    <p className="text-sm text-gray-500 font-raleway text-center">
+                      Precio final. Sin costos adicionales.
                     </p>
                   </div>
 
