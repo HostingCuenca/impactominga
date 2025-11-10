@@ -797,8 +797,8 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Past Activities Section - Instagram Profile Style */}
-        <section id="actividades" className="bg-gradient-to-b from-gray-50 to-white py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+        {/* Past Activities Section - Instagram Profile Style - COMMENTED FOR NOW */}
+        {/* <section id="actividades" className="bg-gradient-to-b from-gray-50 to-white py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
           <div className="max-w-6xl mx-auto">
             <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-4">
               ACTIVIDADES ANTERIORES
@@ -807,7 +807,6 @@ export default function Index() {
               Más de 38 ganadores felices han recibido sus premios
             </p>
 
-            {/* Instagram Profile Grid - No gaps, pure grid */}
             <div className="grid grid-cols-3 gap-1">
               {[
                 {
@@ -900,14 +899,12 @@ export default function Index() {
                   className="relative aspect-square group cursor-pointer overflow-hidden bg-gray-200 animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  {/* Image */}
                   <img
                     src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
 
-                  {/* Hover Overlay - Instagram style */}
                   <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
                     <div className="text-center px-4">
                       <p className="font-oswald text-white font-bold text-sm md:text-base mb-1">
@@ -934,14 +931,13 @@ export default function Index() {
               ))}
             </div>
 
-            {/* CTA Button */}
             <div className="text-center mt-12">
               <button className="bg-gradient-to-r from-[#d4af37] to-[#f0d98f] text-black px-8 py-4 rounded-lg font-oswald font-bold text-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
                 VER TODOS LOS GANADORES
               </button>
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
 
       <Footer />
