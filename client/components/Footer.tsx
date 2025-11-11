@@ -74,15 +74,24 @@ export default function Footer() {
 
         {/* Partner Info */}
         <div className="border-t border-gray-700 mt-12 pt-8 text-center">
-          <p className="text-gray-400 mb-4 font-raleway">Con el respaldo de</p>
-          <p className="font-oswald font-bold text-lg text-[#d4af37]">BRAAPPMOTOS</p>
+          <p className="text-gray-400 mb-4 font-raleway">Una iniciativa de</p>
+          <p className="font-oswald font-bold text-lg text-[#d4af37]">IMPACTO MINGA</p>
         </div>
       </div>
 
       {/* Footer Bottom */}
       <div className="bg-gray-950 text-center py-4 border-t border-gray-700">
         <p className="text-gray-400 text-sm font-raleway">
-          Developed with <span className="text-red-500">♥</span> by <span className="text-[#d4af37] font-semibold">Torisoftt</span> - Impacto Minga © 2024
+          Developed with <span className="text-red-500">♥</span> by{' '}
+          <a
+            href="https://torisoftt.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#d4af37] font-semibold hover:text-[#f0d98f] transition"
+          >
+            Torisoftt
+          </a>
+          {' '}- Impacto Minga © 2024
         </p>
       </div>
     </footer>
