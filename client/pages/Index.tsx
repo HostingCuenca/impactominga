@@ -366,7 +366,7 @@ export default function Index() {
           <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
             <div className="max-w-6xl mx-auto">
               <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-8">
-                PREMIOS PROGRESIVOS
+                HERRAMIENTAS A SORTEAR
               </h2>
 
               <div ref={galleryRef} className="relative">
@@ -440,15 +440,21 @@ export default function Index() {
         <section className="bg-white py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
           <div className="max-w-6xl mx-auto">
             <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-12">
-              ¡CANTIDADES LIMITADAS!
+              ¡PORCENTAJE DE AVANCE!
             </h2>
 
             <div className="bg-gray-50 rounded-lg p-8 mb-8">
               <div className="mb-6">
-                <p className="text-center font-oswald text-xl font-bold text-black mb-4">
+                {/* <p className="text-center font-oswald text-xl font-bold text-black mb-4">
                   Números Vendidos: {raffle.ticketsSold.toLocaleString()} / {raffle.totalTickets.toLocaleString()}
                   <span className="text-[#d4af37] ml-2">
                     ({((raffle.ticketsSold / raffle.totalTickets) * 100).toFixed(2)}%)
+                  </span>
+                </p> */}
+                <p className="text-center font-oswald text-xl font-bold text-black mb-4">
+                  Progreso del Sorteo
+                  <span className="text-[#d4af37] ml-2">
+                    {((raffle.ticketsSold / raffle.totalTickets) * 100).toFixed(2)}%
                   </span>
                 </p>
 
@@ -464,7 +470,7 @@ export default function Index() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4 text-center mb-6">
+              {/* <div className="grid md:grid-cols-3 gap-4 text-center mb-6">
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <p className="text-sm text-gray-600 font-raleway mb-1">Total Disponibles</p>
                   <p className="text-2xl font-oswald font-bold text-[#d4af37]">{raffle.totalTickets.toLocaleString()}</p>
@@ -476,6 +482,21 @@ export default function Index() {
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <p className="text-sm text-gray-600 font-raleway mb-1">Quedan</p>
                   <p className="text-2xl font-oswald font-bold text-green-600">{raffle.ticketsAvailable.toLocaleString()}</p>
+                </div>
+              </div> */}
+
+              <div className="grid md:grid-cols-3 gap-4 text-center mb-6">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-sm text-gray-600 font-raleway mb-1">🎯 Oportunidad</p>
+                  <p className="text-2xl font-oswald font-bold text-[#d4af37]">Única</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-sm text-gray-600 font-raleway mb-1">⚡ Velocidad</p>
+                  <p className="text-2xl font-oswald font-bold text-gray-900">Se asignan rápido</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-sm text-gray-600 font-raleway mb-1">🏆 Premios</p>
+                  <p className="text-2xl font-oswald font-bold text-green-600">Increíbles</p>
                 </div>
               </div>
 
@@ -538,7 +559,7 @@ export default function Index() {
             </div>
 
             {/* Additional Purchase Form */}
-            <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
+            {/* <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
               <h3 className="font-oswald text-2xl font-bold text-black mb-6 text-center">
                 Compra adicional
               </h3>
@@ -556,13 +577,16 @@ export default function Index() {
                   />
                 </div>
                 <button
-                  onClick={() => navigate("/cart")}
+                  onClick={() => {
+                    const element = document.getElementById('paquetes');
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="w-full bg-black text-white py-3 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition"
                 >
                   COMPRAR
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
 
@@ -600,7 +624,7 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Winners Showcase Section - Instagram Style */}
+        {/* Winners Showcase Section - Instagram Style - COMMENTED OUT
         <section className="bg-white py-16 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
@@ -609,11 +633,10 @@ export default function Index() {
               </h2>
             </div>
 
-            {/* Instagram Posts Grid */}
             <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {/* Instagram Post 1 */}
+              Instagram Post 1
               <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                {/* Instagram Header */}
+                Instagram Header
                 <div className="flex items-center gap-3 p-4 border-b border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-0.5">
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
@@ -633,7 +656,7 @@ export default function Index() {
                   </button>
                 </div>
 
-                {/* Instagram Image */}
+                Instagram Image
                 <div className="relative bg-gray-100">
                   <img
                     src="/ganador2.png"
@@ -642,7 +665,7 @@ export default function Index() {
                   />
                 </div>
 
-                {/* Instagram Actions */}
+                Instagram Actions
                 <div className="p-4">
                   <div className="flex items-center gap-4 mb-3">
                     <button className="hover:text-gray-500 transition">
@@ -662,7 +685,7 @@ export default function Index() {
                     </button>
                   </div>
 
-                  {/* Caption */}
+                  Caption
                   <div className="space-y-1">
                     <p className="font-oswald font-bold text-lg text-black">¡Kit Completo!</p>
                     <p className="text-sm text-gray-700">
@@ -672,9 +695,9 @@ export default function Index() {
                 </div>
               </div>
 
-              {/* Instagram Post 2 */}
+              Instagram Post 2
               <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                {/* Instagram Header */}
+                Instagram Header
                 <div className="flex items-center gap-3 p-4 border-b border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-0.5">
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
@@ -694,7 +717,7 @@ export default function Index() {
                   </button>
                 </div>
 
-                {/* Instagram Image */}
+                Instagram Image
                 <div className="relative bg-gray-100">
                   <img
                     src="/ganador3.png"
@@ -703,7 +726,7 @@ export default function Index() {
                   />
                 </div>
 
-                {/* Instagram Actions */}
+                Instagram Actions
                 <div className="p-4">
                   <div className="flex items-center gap-4 mb-3">
                     <button className="hover:text-gray-500 transition">
@@ -723,7 +746,7 @@ export default function Index() {
                     </button>
                   </div>
 
-                  {/* Caption */}
+                  Caption
                   <div className="space-y-1">
                     <p className="font-oswald font-bold text-lg text-black">¡Kit Completo Stanley!</p>
                     <p className="text-sm text-gray-700">
@@ -733,9 +756,9 @@ export default function Index() {
                 </div>
               </div>
 
-              {/* Instagram Post 3 */}
+              Instagram Post 3
               <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                {/* Instagram Header */}
+                Instagram Header
                 <div className="flex items-center gap-3 p-4 border-b border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-0.5">
                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
@@ -755,7 +778,7 @@ export default function Index() {
                   </button>
                 </div>
 
-                {/* Instagram Image */}
+                Instagram Image
                 <div className="relative bg-gray-100">
                   <img
                     src="/ganador4.png"
@@ -764,7 +787,7 @@ export default function Index() {
                   />
                 </div>
 
-                {/* Instagram Actions */}
+                Instagram Actions
                 <div className="p-4">
                   <div className="flex items-center gap-4 mb-3">
                     <button className="hover:text-gray-500 transition">
@@ -784,7 +807,7 @@ export default function Index() {
                     </button>
                   </div>
 
-                  {/* Caption */}
+                  Caption
                   <div className="space-y-1">
                     <p className="font-oswald font-bold text-lg text-black">¡Nuevo Taladro!</p>
                     <p className="text-sm text-gray-700">
@@ -793,6 +816,67 @@ export default function Index() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </section> */}
+
+        {/* New Section - Be The Next Winner */}
+        <section className="bg-gradient-to-b from-white to-gray-50 py-16 px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            <div className="mb-8">
+              <h2 className="font-oswald text-4xl md:text-5xl font-bold text-black mb-4">
+                ¡PUEDES SER EL <span className="text-[#d4af37]">PRÓXIMO GANADOR!</span>
+              </h2>
+              <p className="text-xl text-gray-700 font-raleway mb-8">
+                Este es nuestro primer sorteo y estamos emocionados de comenzar a entregar premios increíbles
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition">
+                <div className="text-6xl mb-4">🎯</div>
+                <h3 className="font-oswald text-2xl font-bold text-black mb-3">
+                  Primera Actividad
+                </h3>
+                <p className="text-gray-600 font-raleway">
+                  Estrena nuestra primera rifa y ten la oportunidad de ganar herramientas profesionales
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition">
+                <div className="text-6xl mb-4">⚡</div>
+                <h3 className="font-oswald text-2xl font-bold text-black mb-3">
+                  Más Oportunidades
+                </h3>
+                <p className="text-gray-600 font-raleway">
+                  Al ser el primer sorteo, tienes mayores probabilidades de convertirte en ganador
+                </p>
+              </div>
+
+              <div className="bg-white rounded-lg p-8 shadow-lg hover:shadow-xl transition">
+                <div className="text-6xl mb-4">🏆</div>
+                <h3 className="font-oswald text-2xl font-bold text-black mb-3">
+                  Premios Garantizados
+                </h3>
+                <p className="text-gray-600 font-raleway">
+                  Herramientas de calidad profesional que potenciarán tu trabajo
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-[#d4af37] to-[#f0d98f] rounded-lg p-8 shadow-xl">
+              <p className="font-oswald text-2xl md:text-3xl font-bold text-black mb-4">
+                ¡No pierdas esta oportunidad única!
+              </p>
+              <p className="text-lg text-gray-900 font-raleway mb-6">
+                Participa ahora y forma parte de nuestra historia desde el principio
+              </p>
+              <a
+                href="#paquetes"
+                className="inline-block bg-black text-white px-12 py-4 rounded-lg font-oswald text-xl font-bold hover:bg-gray-800 transition-all transform hover:scale-105 shadow-lg"
+              >
+                PARTICIPAR AHORA
+              </a>
             </div>
           </div>
         </section>

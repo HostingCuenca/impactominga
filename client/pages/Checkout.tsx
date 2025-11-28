@@ -238,8 +238,8 @@ export default function Checkout() {
   }
 
   const subtotal = selectedPackage?.price || 0;
-  const tax = subtotal * 0.12;
-  const total = subtotal + tax;
+  // const tax = subtotal * 0.12; // IVA 0% - No aplica
+  const total = subtotal; // Sin IVA
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -452,6 +452,49 @@ export default function Checkout() {
                     </select>
                   </div>
 
+                  {/* Bank Transfer Info */}
+                  {formData.paymentMethod === 'bank_transfer' && (
+                    <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                      <h3 className="font-oswald text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                          <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd"/>
+                        </svg>
+                        DATOS PARA LA TRANSFERENCIA
+                      </h3>
+                      <div className="space-y-3 font-raleway text-sm">
+                        <div className="flex justify-between items-center border-b border-blue-200 pb-2">
+                          <span className="font-semibold text-blue-900">Banco:</span>
+                          <span className="text-blue-800 font-bold">BANCO PICHINCHA</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-blue-200 pb-2">
+                          <span className="font-semibold text-blue-900">Tipo de Cuenta:</span>
+                          <span className="text-blue-800">CUENTA CORRIENTE</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-blue-200 pb-2">
+                          <span className="font-semibold text-blue-900"># de Cuenta:</span>
+                          <span className="text-blue-800 font-mono font-bold text-lg">2214722715</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-blue-200 pb-2">
+                          <span className="font-semibold text-blue-900">Titular:</span>
+                          <span className="text-blue-800">MINGA AURUMEC S.A.S</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-semibold text-blue-900">RUC:</span>
+                          <span className="text-blue-800 font-mono">1591728948001</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">
+                        <p className="text-xs text-yellow-800 font-raleway mb-2">
+                          <strong>📱 Importante:</strong> Después de realizar la transferencia, envía el comprobante por WhatsApp al <strong>+593 98 021 2915</strong> para corroborar la información y mayor seguridad.
+                        </p>
+                        <p className="text-xs text-yellow-700 font-raleway">
+                          ℹ️ <strong>Nota:</strong> Los tickets de rifa NO gravan IVA (IVA 0%). Los valores mostrados son finales.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-4">
                     <label className="block font-raleway font-semibold text-gray-700 mb-2">
                       Notas adicionales (opcional)
@@ -461,6 +504,7 @@ export default function Checkout() {
                       value={formData.customerNotes}
                       onChange={handleInputChange}
                       rows={3}
+                      placeholder="Ej: Ya realicé la transferencia, comprobante enviado por WhatsApp"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
                     />
                   </div>
@@ -499,9 +543,13 @@ export default function Checkout() {
                         <p className="text-gray-600 font-raleway">Subtotal:</p>
                         <p className="font-oswald font-bold">${subtotal.toFixed(2)}</p>
                       </div>
-                      <div className="flex justify-between">
+                      {/* <div className="flex justify-between">
                         <p className="text-gray-600 font-raleway">IVA (12%):</p>
                         <p className="font-oswald font-bold">${tax.toFixed(2)}</p>
+                      </div> */}
+                      <div className="flex justify-between">
+                        <p className="text-gray-600 font-raleway">IVA:</p>
+                        <p className="font-oswald font-bold">0%</p>
                       </div>
                     </div>
 

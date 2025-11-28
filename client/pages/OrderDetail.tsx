@@ -342,9 +342,17 @@ export default function OrderDetail() {
                   <h3 className="font-oswald text-xl font-bold text-black mb-1">
                     ACCIÓN REQUERIDA
                   </h3>
-                  <p className="font-raleway text-gray-700">
+                  <p className="font-raleway text-gray-700 mb-2">
                     El cliente ha subido su comprobante de pago. Revisa y aprueba o rechaza la orden.
                   </p>
+                  <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mt-2">
+                    <p className="text-xs font-raleway text-blue-800">
+                      📱 <strong>Recordatorio:</strong> Verifica que el comprobante también haya sido enviado por WhatsApp al +593 98 021 2915 para doble verificación.
+                    </p>
+                    <p className="text-xs font-raleway text-blue-700 mt-1">
+                      ℹ️ Los tickets NO gravan IVA (IVA 0%). Verifica que el monto coincida con el total sin IVA.
+                    </p>
+                  </div>
                 </div>
                 <div className="flex gap-3">
                   <button

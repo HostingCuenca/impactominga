@@ -223,9 +223,17 @@ export default function MyOrders() {
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-oswald text-4xl font-bold text-black mb-2">MIS COMPRAS</h1>
-            <p className="text-gray-600 font-raleway">
+            <p className="text-gray-600 font-raleway mb-4">
               Aquí puedes ver el estado de tus órdenes y subir tus comprobantes de pago.
             </p>
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+              <p className="text-sm font-raleway text-blue-800 mb-2">
+                <strong>📱 Importante:</strong> Envía también tu comprobante por WhatsApp al <strong>+593 98 021 2915</strong> para corroborar la información y mayor seguridad.
+              </p>
+              <p className="text-xs font-raleway text-blue-700">
+                ℹ️ <strong>Nota:</strong> Los tickets de rifa NO gravan IVA (IVA 0%). Los valores mostrados son finales.
+              </p>
+            </div>
           </div>
 
           {/* Orders List */}

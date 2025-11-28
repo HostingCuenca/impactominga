@@ -1,4 +1,4 @@
-import { Instagram, Mail, Phone } from "lucide-react";
+import { Instagram, Mail, Phone, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
@@ -23,16 +23,16 @@ export default function Footer() {
             <h3 className="font-oswald font-bold text-xl mb-6">Síguenos</h3>
             <div className="space-y-4">
               <a
-                href="https://instagram.com/impacto.minga"
+                href="https://instagram.com/impacto_minga"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-gray-300 hover:text-[#d4af37] transition"
               >
                 <Instagram size={20} />
-                <span>@impacto.minga</span>
+                <span>@impacto_minga</span>
               </a>
               <a
-                href="https://facebook.com/impactominga"
+                href="https://facebook.com/Impactominga"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-gray-300 hover:text-[#d4af37] transition"
@@ -40,7 +40,18 @@ export default function Footer() {
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
-                <span>Impacto Minga</span>
+                <span>Impactominga</span>
+              </a>
+              <a
+                href="https://tiktok.com/@impacto_minga"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-300 hover:text-[#d4af37] transition"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                </svg>
+                <span>@impacto_minga</span>
               </a>
             </div>
           </div>
@@ -50,14 +61,16 @@ export default function Footer() {
             <h3 className="font-oswald font-bold text-xl mb-6">Contacto</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-gray-300">
-                <Mail size={20} />
-                <a href="mailto:info@impactominga.com" className="hover:text-[#d4af37] transition">
-                  info@impactominga.com
+                <Phone size={20} />
+                <a href="tel:+593980212915" className="hover:text-[#d4af37] transition">
+                  +593 98 021 2915
                 </a>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Phone size={20} />
-                <span>099-999-9999</span>
+                <a href="https://wa.me/593980212915" target="_blank" rel="noopener noreferrer" className="hover:text-[#d4af37] transition">
+                  WhatsApp
+                </a>
               </div>
               <Link
                 to="/terms"
@@ -75,7 +88,7 @@ export default function Footer() {
         {/* Partner Info */}
         <div className="border-t border-gray-700 mt-12 pt-8 text-center">
           <p className="text-gray-400 mb-4 font-raleway">Una iniciativa de</p>
-          <p className="font-oswald font-bold text-lg text-[#d4af37]">IMPACTO MINGA</p>
+          <p className="font-oswald font-bold text-lg text-[#d4af37]">MINGA AURUM EC</p>
         </div>
       </div>
 
@@ -91,7 +104,7 @@ export default function Footer() {
           >
             Torisoftt
           </a>
-          {' '}- Impacto Minga © 2024
+          {' '}- Impacto Minga © 2025
         </p>
       </div>
     </footer>

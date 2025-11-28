@@ -107,9 +107,16 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-between text-sm font-raleway text-gray-600 mb-2">
               <span>Progreso de Ventas</span>
+              {/*
               <span className="text-[#d4af37] font-bold">
                 {data.raffle.ticketsSold} / {data.raffle.totalTickets} boletos
               </span>
+              */}
+              <span className="text-[#d4af37] font-bold">
+                Puedes ser el próximo ganador 😁
+              </span>
+
+
             </div>
             <div className="h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">
               <div
@@ -286,7 +293,7 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
             ¡Compra tus números ahora y participa por increíbles premios!
           </p>
           <a
-            href="#packages"
+            href="#paquetes"
             className="inline-block bg-[#d4af37] text-black px-12 py-4 rounded-lg font-oswald text-xl font-bold hover:bg-[#b8941f] transition-all transform hover:scale-105 shadow-lg"
           >
             COMPRAR NÚMEROS

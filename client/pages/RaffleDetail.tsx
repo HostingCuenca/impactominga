@@ -512,7 +512,7 @@ export default function RaffleDetail() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        {/* <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="bg-purple-100 p-2 rounded-lg">
               <Ticket className="text-purple-600" size={20} />
@@ -525,7 +525,7 @@ export default function RaffleDetail() {
           <p className="text-sm text-gray-500 mt-1">
             de {raffle.totalTickets.toLocaleString()}
           </p>
-        </div>
+        </div> */}
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex items-center gap-3 mb-2">
@@ -573,12 +573,18 @@ export default function RaffleDetail() {
             {progressPercent.toFixed(1)}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-4">
+        <div className="w-full bg-gray-200 rounded-full h-4 mb-2">
           <div
             className="bg-[#d4af37] h-4 rounded-full transition-all"
             style={{ width: `${Math.min(progressPercent, 100)}%` }}
           ></div>
         </div>
+        {/* <p className="text-sm text-gray-500 text-center">
+          {raffle.ticketsSold.toLocaleString()} / {raffle.totalTickets.toLocaleString()} boletos
+        </p> */}
+        <p className="text-sm text-gray-500 text-center">
+          ¡Cada boleto te acerca más a ganar increíbles premios!
+        </p>
       </div>
 
       {/* Tabs */}
@@ -1220,20 +1226,20 @@ export default function RaffleDetail() {
                             )}
 
                             <div className="mt-3">
-                              {prize.unlockAtTicketsSold ? (
+                              {/* {prize.unlockAtTicketsSold ? (
                                 <p className="text-gray-600 font-raleway text-sm">
                                   🔓 Se desbloquea al vender{" "}
                                   <strong>{prize.unlockAtTicketsSold.toLocaleString()}</strong>{" "}
                                   boletos
                                 </p>
-                              ) : (
-                                prize.unlockAtPercentage && (
+                              ) : ( */}
+                                {prize.unlockAtPercentage && (
                                   <p className="text-gray-600 font-raleway text-sm">
                                     🔓 Se desbloquea al alcanzar{" "}
                                     <strong>{prize.unlockAtPercentage}%</strong> de ventas
                                   </p>
-                                )
-                              )}
+                                )}
+                              {/* )} */}
                             </div>
 
                             <div className="mt-2">

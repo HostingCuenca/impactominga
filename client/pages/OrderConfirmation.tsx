@@ -159,9 +159,13 @@ export default function OrderConfirmation() {
                 <span className="font-raleway font-bold text-black">${order.subtotal.toFixed(2)}</span>
               </div>
 
-              <div className="flex justify-between py-3 border-b border-gray-200">
+              {/* <div className="flex justify-between py-3 border-b border-gray-200">
                 <span className="font-raleway text-gray-600">IVA (12%):</span>
                 <span className="font-raleway font-bold text-black">${order.tax.toFixed(2)}</span>
+              </div> */}
+              <div className="flex justify-between py-3 border-b border-gray-200">
+                <span className="font-raleway text-gray-600">IVA:</span>
+                <span className="font-raleway font-bold text-black">0%</span>
               </div>
 
               <div className="flex justify-between py-4 bg-gray-50 rounded-lg px-4">
@@ -211,8 +215,16 @@ export default function OrderConfirmation() {
             </div>
 
             <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="font-raleway text-sm text-blue-800">
+              <p className="font-raleway text-sm text-blue-800 mb-3">
                 <strong>Importante:</strong> Una vez realizado el pago, debes subir el comprobante en la sección "Mis Compras" para que podamos validar tu orden y asignarte tus números de rifa.
+              </p>
+              <p className="font-raleway text-sm text-blue-800">
+                <strong>📱 También envía tu comprobante por WhatsApp al +593 98 021 2915</strong> para corroborar la información y mayor seguridad.
+              </p>
+            </div>
+            <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+              <p className="font-raleway text-sm text-green-800">
+                ℹ️ <strong>Nota:</strong> Los tickets de rifa NO gravan IVA (IVA 0%). Los valores mostrados son finales.
               </p>
             </div>
           </div>
@@ -242,9 +254,12 @@ export default function OrderConfirmation() {
                   2
                 </span>
                 <div>
-                  <h3 className="font-raleway font-bold text-black mb-1">Sube tu comprobante</h3>
+                  <h3 className="font-raleway font-bold text-black mb-1">Envía tu comprobante</h3>
+                  <p className="font-raleway text-gray-600 text-sm mb-2">
+                    📱 <strong>Envía el comprobante por WhatsApp al +593 98 021 2915</strong> para corroboración inmediata y mayor seguridad.
+                  </p>
                   <p className="font-raleway text-gray-600 text-sm">
-                    Ve a "Mis Compras" y sube la foto o captura del comprobante de pago.
+                    💻 También súbelo en "Mis Compras" en la plataforma.
                   </p>
                 </div>
               </li>
