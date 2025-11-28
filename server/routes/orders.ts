@@ -290,9 +290,10 @@ async function createOrderForUser(userId: string, data: any) {
 
   // Calcular montos
   const subtotal = parseFloat(pkg.price);
-  const taxRate = 0.12; // 12% IVA
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  // const taxRate = 0.12; // 12% IVA - COMENTADO: IVA 0%
+  const taxRate = 0; // IVA 0% - No aplica para tickets de rifa
+  const tax = 0; // IVA 0%
+  const total = subtotal; // Sin IVA
 
   // Generar número de orden único
   const orderNumber = `IM-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
