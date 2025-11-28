@@ -300,7 +300,7 @@ export default function Index() {
               <img
                 src={raffle.bannerUrl}
                 alt={raffle.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-right"
               />
             </div>
           </div>
