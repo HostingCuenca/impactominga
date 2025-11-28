@@ -198,19 +198,19 @@ export default function OrderConfirmation() {
               </div>
               <div className="flex justify-between border-b border-gray-200 pb-2">
                 <span className="font-raleway font-semibold text-gray-700">Tipo de cuenta:</span>
-                <span className="font-raleway text-black">Cuenta Corriente</span>
+                <span className="font-raleway text-black">Cuenta Ahorro</span>
               </div>
               <div className="flex justify-between border-b border-gray-200 pb-2">
                 <span className="font-raleway font-semibold text-gray-700">Número de cuenta:</span>
-                <span className="font-raleway font-mono font-bold text-black">2100123456</span>
+                <span className="font-raleway font-mono font-bold text-black">2213830211</span>
               </div>
               <div className="flex justify-between border-b border-gray-200 pb-2">
                 <span className="font-raleway font-semibold text-gray-700">Titular:</span>
-                <span className="font-raleway text-black">Impacto Minga</span>
+                <span className="font-raleway text-black">MINGA TIPANLUIZA RICHARD DUFFER</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-raleway font-semibold text-gray-700">RUC:</span>
-                <span className="font-raleway font-mono text-black">1234567890001</span>
+                <span className="font-raleway font-semibold text-gray-700">C.I:</span>
+                <span className="font-raleway font-mono text-black">1501260440</span>
               </div>
             </div>
 

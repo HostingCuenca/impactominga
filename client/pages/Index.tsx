@@ -172,10 +172,10 @@ export default function Index() {
         {/* Hero Section with Background Image */}
         <section
           id="juega"
-          className="relative bg-cover bg-center bg-no-repeat min-h-[600px] md:min-h-[700px] flex items-center"
+          className="relative bg-cover bg-top bg-no-repeat min-h-[600px] md:min-h-[700px] flex items-center"
           style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('/portada background.png')`,
-            backgroundPosition: 'center',
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('/nuevaportada.png')`,
+            backgroundPosition: 'bottom center',
             backgroundSize: 'cover'
           }}
         >
@@ -295,7 +295,7 @@ export default function Index() {
 
         {/* Banner Image */}
         <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg bg-gray-200 shadow-xl">
               <img
                 src={raffle.bannerUrl}
