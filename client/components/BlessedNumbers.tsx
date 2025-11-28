@@ -83,16 +83,26 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
           <div className="inline-flex items-center gap-2 bg-[#d4af37]/10 px-6 py-2 rounded-full mb-4 border border-[#d4af37]/20">
             <Sparkles className="w-5 h-5 text-[#d4af37]" />
             <span className="font-oswald font-bold text-[#d4af37] uppercase tracking-wider">
-              Números Bendecidos
+              Números Afortunados
             </span>
           </div>
+          {/*
           <h2 className="font-oswald text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             ACTIVIDAD #{data.raffle.activityNumber}
           </h2>
+          */}
+          <h2 className="font-oswald text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+            ACTIVIDAD #001
+          </h2>
+
+          <p className="text-xl text-gray-700 font-raleway mb-8">
+            Sorteo 500 items
+          </p>
+          {/*
           <p className="text-xl text-gray-700 font-raleway mb-8">
             {data.raffle.title}
           </p>
-
+*/}
           {/* Progress Bar */}
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-between text-sm font-raleway text-gray-600 mb-2">

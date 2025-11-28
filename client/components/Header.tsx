@@ -29,7 +29,7 @@ export default function Header() {
     <>
       {/* Top Banner */}
       <div className="fixed top-0 left-0 right-0 bg-[#d4af37] text-black text-center py-2 font-oswald font-bold text-sm md:text-base z-50 shadow-lg">
-        NUEVA ACTIVIDAD #39
+        NUEVA ACTIVIDAD #001
       </div>
 
       {/* Header Navigation */}

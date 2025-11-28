@@ -194,7 +194,7 @@ export default function Index() {
                 className="font-oswald text-2xl md:text-4xl italic text-[#d4af37] font-bold"
                 style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9)' }}
               >
-                ¡Gana las herramientas que <span className="text-white">POTENCIARÁN</span> su trabajo!
+                ¡Gana las herramientas que <span className="text-white">POTENCIARÁN</span> tú trabajo!
               </h2>
 
               {/* CTA Button */}
@@ -284,7 +284,7 @@ export default function Index() {
                       Combos Profesionales
                     </h3>
                     <p className="text-gray-300 font-raleway text-sm">
-                      Un solo que trabaja
+                      Optimizan tú tiempo
                     </p>
                   </div>
                 </div>
