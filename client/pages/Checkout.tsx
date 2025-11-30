@@ -120,20 +120,54 @@ export default function Checkout() {
       const data = await response.json();
 
       if (data.success) {
-        // Order created successfully (user was authenticated)
+        // Order created successfully (user was authenticated OR auto-created)
         navigate(`/order-confirmation?orderId=${data.data.orderId}`);
       } else if (data.requirePassword) {
-        // New user - show password modal
-        setShowPasswordModal(true);
+        // New user - auto-create with hardcoded password (no modal)
+        setLoading(true); // Mantener loading mientras se crea
+        await handleCreateWithPasswordSilently();
+        return; // No ejecutar setLoading(false) del finally
       } else if (data.requireLogin) {
-        // Existing user - show login modal
-        setShowLoginModal(true);
+        // Este caso ya no debería ocurrir porque el backend lo maneja automáticamente
+        // Pero lo dejamos por seguridad
+        setError("Ya tienes una cuenta. Por favor contáctanos si tienes problemas.");
       } else {
         setError(data.message || "Error al procesar checkout");
       }
     } catch (err) {
       setError("Error de conexión. Intenta nuevamente.");
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateWithPasswordSilently = async () => {
+    // Crear usuario automáticamente con contraseña hardcodeada (sin modal)
+    try {
+      const response = await fetch("/api/checkout/with-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          raffleId,
+          packageId,
+          ...formData,
+          password: "impactopassword", // Contraseña hardcodeada
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Auto-login
+        login(data.data.token, data.data.user);
+        navigate(`/order-confirmation?orderId=${data.data.order.orderId}`);
+      } else {
+        setError(data.message || "Error al crear cuenta");
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error("Error al crear cuenta automáticamente:", err);
+      setError("Error de conexión. Intenta nuevamente.");
       setLoading(false);
     }
   };

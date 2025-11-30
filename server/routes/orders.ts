@@ -58,17 +58,49 @@ export async function smartCheckout(req: Request, res: Response) {
 
     // Usuario NO autenticado → Verificar si ya existe
     const existingUser = await pool.query(
-      "SELECT id, email FROM users WHERE email = $1 OR id_number = $2",
+      "SELECT id, email, password_hash FROM users WHERE email = $1 OR id_number = $2",
       [email.toLowerCase(), idNumber]
     );
 
     if (existingUser.rows.length > 0) {
-      // Usuario YA EXISTE → Pedir login
-      return res.status(200).json({
-        success: false,
-        requireLogin: true,
-        message: "Ya tienes una cuenta. Inicia sesión para continuar.",
-        email: existingUser.rows[0].email
+      // Usuario YA EXISTE → Auto-login con contraseña hardcodeada y crear orden
+      const user = existingUser.rows[0];
+      const HARDCODED_PASSWORD = "impactopassword";
+
+      // Verificar contraseña hardcodeada
+      const isValidPassword = await bcrypt.compare(HARDCODED_PASSWORD, user.password_hash);
+
+      if (!isValidPassword) {
+        // Si la contraseña no coincide, pedir login manual (caso raro)
+        return res.status(200).json({
+          success: false,
+          requireLogin: true,
+          message: "Ya tienes una cuenta. Inicia sesión para continuar.",
+          email: user.email
+        });
+      }
+
+      // Crear orden directamente para el usuario existente
+      const order = await createOrderForUser(
+        user.id,
+        { raffleId, packageId, email, firstName, lastName, phone, idType, idNumber,
+          shippingAddress, shippingCity, shippingProvince, paymentMethod, customerNotes }
+      );
+
+      // Enviar email de confirmación
+      await sendOrderConfirmationEmail(
+        user.email,
+        firstName,
+        order.orderNumber,
+        order.total,
+        order.raffleTitle,
+        order.quantity
+      );
+
+      return res.status(201).json({
+        success: true,
+        data: order,
+        message: "Orden creada exitosamente"
       });
     }
 
