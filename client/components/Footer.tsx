@@ -32,7 +32,7 @@ export default function Footer() {
                 <span>@impacto_minga</span>
               </a>
               <a
-                href="https://facebook.com/Impactominga"
+                href="https://www.facebook.com/share/1BypokG91c/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-gray-300 hover:text-[#d4af37] transition"

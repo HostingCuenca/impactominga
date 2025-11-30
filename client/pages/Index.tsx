@@ -593,8 +593,8 @@ export default function Index() {
             </div>
 
             {/* Additional Purchase Form */}
-            <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
-              <h3 className="font-oswald text-2xl font-bold text-black mb-2 text-center">
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 max-w-md mx-auto border-2 border-[#d4af37] shadow-xl">
+              <h3 className="font-oswald text-3xl font-bold text-black mb-2 text-center">
                 Compra Personalizada
               </h3>
               {raffle && (
@@ -602,21 +602,50 @@ export default function Index() {
                   de: <span className="font-bold text-[#d4af37]">{raffle.title}</span>
                 </p>
               )}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
-                    Cantidad de números:
+                  <label className="block font-raleway font-bold text-gray-800 mb-3 text-center text-lg">
+                    👆 Selecciona la cantidad de números
                   </label>
-                  <input
-                    type="number"
-                    min="4"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(4, parseInt(e.target.value) || 4))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg font-raleway"
-                  />
-                  <p className="text-sm text-gray-500 mt-2 font-raleway">
-                    Mínimo 4 números · Precio: ${(quantity * 1).toFixed(2)} USD
-                  </p>
+
+                  {/* Selector visual con botones grandes */}
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <button
+                      onClick={() => setQuantity(Math.max(4, quantity - 1))}
+                      className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-2xl transition shadow-lg hover:shadow-xl"
+                      aria-label="Disminuir cantidad"
+                    >
+                      −
+                    </button>
+
+                    <div className="bg-white border-4 border-[#d4af37] rounded-lg px-8 py-4 min-w-[120px]">
+                      <input
+                        type="number"
+                        min="4"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Math.max(4, parseInt(e.target.value) || 4))}
+                        className="w-full text-center font-oswald text-4xl font-bold text-black bg-transparent outline-none"
+                      />
+                      <p className="text-center text-xs text-gray-500 font-raleway mt-1">números</p>
+                    </div>
+
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-2xl transition shadow-lg hover:shadow-xl"
+                      aria-label="Aumentar cantidad"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className="bg-[#d4af37] bg-opacity-20 rounded-lg p-4 text-center">
+                    <p className="text-sm text-gray-700 font-raleway mb-1">
+                      💡 <strong>Mínimo 4 números</strong> · Cada número = $1 USD
+                    </p>
+                    <p className="font-oswald text-2xl font-bold text-black">
+                      Total: ${(quantity * 1).toFixed(2)} USD
+                    </p>
+                  </div>
                 </div>
                 <button
                   onClick={() => {
