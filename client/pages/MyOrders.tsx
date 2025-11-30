@@ -363,8 +363,8 @@ export default function MyOrders() {
                           </div>
                         </div>
 
-                        {/* Receipt Upload */}
-                        <div>
+                        {/* Receipt Upload - COMENTADO */}
+                        {/* <div>
                           <h4 className="font-oswald text-lg font-bold text-black mb-4">
                             COMPROBANTE DE PAGO
                           </h4>
@@ -405,9 +405,9 @@ export default function MyOrders() {
                                 <p className="mt-2 text-sm text-red-600 font-raleway">{uploadError}</p>
                               )}
                             </div>
-                          )}
+                          )} */}
 
-                          {order.status === "pending_verification" && (
+                          {/* {order.status === "pending_verification" && (
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                               <CheckCircle className="w-8 h-8 text-blue-600 mb-2" />
                               <p className="font-raleway text-sm text-blue-800">
@@ -461,8 +461,8 @@ export default function MyOrders() {
                                 }}
                               />
                             </div>
-                          )}
-                        </div>
+                          )} */}
+                        {/* </div> */}
                       </div>
                     </div>
                   )}

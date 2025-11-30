@@ -61,12 +61,29 @@ export default function Checkout() {
           setRaffle(raffleData.data);
         }
 
-        // Load packages
-        const packagesRes = await fetch(`/api/raffles/${raffleId}/packages`);
-        const packagesData = await packagesRes.json();
-        if (packagesData.success) {
-          const pkg = packagesData.data.find((p: any) => p.id === packageId);
-          setSelectedPackage(pkg);
+        // Check if it's a custom package (custom-X)
+        if (packageId && packageId.startsWith('custom-')) {
+          // Custom package - create virtual package object
+          const customQuantity = parseInt(packageId.replace('custom-', ''));
+          if (!isNaN(customQuantity) && customQuantity >= 4) {
+            setSelectedPackage({
+              id: packageId,
+              quantity: customQuantity,
+              price: customQuantity * 1.0, // $1 USD per ticket
+              isMostPopular: false,
+              discountPercentage: 0,
+            });
+          } else {
+            setError("Cantidad personalizada inválida");
+          }
+        } else {
+          // Load packages from API
+          const packagesRes = await fetch(`/api/raffles/${raffleId}/packages`);
+          const packagesData = await packagesRes.json();
+          if (packagesData.success) {
+            const pkg = packagesData.data.find((p: any) => p.id === packageId);
+            setSelectedPackage(pkg);
+          }
         }
       } catch (err) {
         setError("Error al cargar datos del sorteo");
@@ -281,7 +298,7 @@ export default function Checkout() {
   }
 
   const subtotal = selectedPackage?.price || 0;
-  // const tax = subtotal * 0.12; // IVA 0% - No aplica
+  const tax = 0; // IVA 0% - No aplica para tickets de rifa
   const total = subtotal; // Sin IVA
 
   return (

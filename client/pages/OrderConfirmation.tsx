@@ -215,11 +215,8 @@ export default function OrderConfirmation() {
             </div>
 
             <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="font-raleway text-sm text-blue-800 mb-3">
-                <strong>Importante:</strong> Una vez realizado el pago, debes subir el comprobante en la sección "Mis Compras" para que podamos validar tu orden y asignarte tus números de rifa.
-              </p>
               <p className="font-raleway text-sm text-blue-800">
-                <strong>📱 También envía tu comprobante por WhatsApp al +593 98 021 2915</strong> para corroborar la información y mayor seguridad.
+                <strong>📱 Envía tu comprobante por WhatsApp al +593 98 021 2915</strong> para validar tu orden, asignarte tus números de rifa y mayor seguridad.
               </p>
             </div>
             <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
@@ -255,12 +252,12 @@ export default function OrderConfirmation() {
                 </span>
                 <div>
                   <h3 className="font-raleway font-bold text-black mb-1">Envía tu comprobante</h3>
-                  <p className="font-raleway text-gray-600 text-sm mb-2">
+                  <p className="font-raleway text-gray-600 text-sm">
                     📱 <strong>Envía el comprobante por WhatsApp al +593 98 021 2915</strong> para corroboración inmediata y mayor seguridad.
                   </p>
-                  <p className="font-raleway text-gray-600 text-sm">
+                  {/* <p className="font-raleway text-gray-600 text-sm">
                     💻 También súbelo en "Mis Compras" en la plataforma.
-                  </p>
+                  </p> */}
                 </div>
               </li>
 
@@ -283,7 +280,7 @@ export default function OrderConfirmation() {
                 <div>
                   <h3 className="font-raleway font-bold text-black mb-1">¡Listo para participar!</h3>
                   <p className="font-raleway text-gray-600 text-sm">
-                    Una vez aprobado, podrás ver tus números asignados en "Mis Compras".
+                    Una vez aprobado, recibirás un correo con tus números asignados.
                   </p>
                 </div>
               </li>
@@ -292,17 +289,17 @@ export default function OrderConfirmation() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-            <Link
+            {/* <Link
               to="/my-orders"
               className="flex-1 bg-[#d4af37] text-black py-4 rounded-lg font-oswald font-bold text-lg hover:bg-[#b8941f] transition text-center flex items-center justify-center gap-2"
             >
               <Upload className="w-5 h-5" />
               IR A MIS COMPRAS
-            </Link>
+            </Link> */}
 
             <Link
               to="/"
-              className="flex-1 bg-black text-white py-4 rounded-lg font-oswald font-bold text-lg hover:bg-gray-800 transition text-center"
+              className="w-full bg-black text-white py-4 rounded-lg font-oswald font-bold text-lg hover:bg-gray-800 transition text-center"
             >
               VOLVER AL INICIO
             </Link>

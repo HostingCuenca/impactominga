@@ -15,10 +15,19 @@ export default function Cart() {
   const handleCheckout = () => {
     if (items.length === 0) return;
 
-    // For now, we'll use the first item to navigate to checkout
-    // In a more complex scenario, you might want to handle multiple items differently
     const firstItem = items[0];
-    navigate(`/checkout?raffleId=${firstItem.raffleId}&packageId=${firstItem.packageId}`);
+    const totalTicketsForRaffle = items
+      .filter(item => item.raffleId === firstItem.raffleId)
+      .reduce((sum, item) => sum + (item.ticketCount * item.quantity), 0);
+
+    // Si el usuario tiene múltiples paquetes o cantidad > 1, crear paquete personalizado
+    if (items.length > 1 || firstItem.quantity > 1 || totalTicketsForRaffle !== firstItem.ticketCount) {
+      // Usar paquete personalizado con el total de números
+      navigate(`/checkout?raffleId=${firstItem.raffleId}&packageId=custom-${totalTicketsForRaffle}`);
+    } else {
+      // Un solo paquete con cantidad 1, usar el packageId original
+      navigate(`/checkout?raffleId=${firstItem.raffleId}&packageId=${firstItem.packageId}`);
+    }
   };
 
   return (
