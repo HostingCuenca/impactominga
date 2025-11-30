@@ -562,7 +562,7 @@ export async function sendOrderApprovedEmail(
             </div> -->
 
             <p style="margin-top: 30px; font-size: 14px; color: #666; text-align: center;">
-              Puedes consultar tus números en cualquier momento desde tu cuenta o contactarnos por WhatsApp.
+              Puedes consultar tus números en cualquier momento desde el sitio web en la sección consultar boletos con el correo que realizaste tu compra.
             </p>
           </div>
 
