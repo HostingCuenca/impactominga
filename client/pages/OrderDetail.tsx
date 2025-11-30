@@ -584,12 +584,12 @@ export default function OrderDetail() {
                   <span className="font-semibold text-black">${order.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-raleway">
-                  <span className="text-gray-600">IVA (12%):</span>
+                  <span className="text-gray-600">IVA (0%):</span>
                   <span className="font-semibold text-black">${order.tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-oswald text-2xl pt-2 border-t-2 border-gray-300">
                   <span className="text-black">TOTAL:</span>
-                  <span className="font-bold text-[#d4af37]">${order.total.toFixed(2)}</span>
+                  <span className="font-bold text-[#d4af37]">${order.subtotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>

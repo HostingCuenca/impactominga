@@ -170,7 +170,7 @@ export default function OrderConfirmation() {
 
               <div className="flex justify-between py-4 bg-gray-50 rounded-lg px-4">
                 <span className="font-oswald text-xl text-black">TOTAL:</span>
-                <span className="font-oswald text-2xl font-bold text-[#d4af37]">${order.total.toFixed(2)}</span>
+                <span className="font-oswald text-2xl font-bold text-[#d4af37]">${order.subtotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
