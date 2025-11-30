@@ -14,7 +14,7 @@ export default function Footer() {
               Premios que cambian tu manera de trabajar. Herramientas profesionales al alcance de todos por solo $1 USD.
             </p>
             <p className="text-gray-400 font-raleway text-xs">
-              Organizador: Minga Aurum EC
+              Organizador: Minga AurumEC
             </p>
           </div>
 

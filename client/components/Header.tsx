@@ -104,12 +104,13 @@ export default function Header() {
               </>
             ) : (
               <>
+                {/* Mobile Menu Button
                 <Link
                   to="/login"
                   className="text-white font-raleway font-semibold hover:text-[#d4af37] transition"
                 >
                   Iniciar Sesión
-                </Link>
+                </Link>*/}
                 <Link
                   to="/cart"
                   className="flex items-center gap-2 bg-[#d4af37] text-black px-4 py-2 rounded-lg font-raleway font-semibold hover:bg-[#b8941f] transition"
