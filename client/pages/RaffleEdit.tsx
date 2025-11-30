@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
-import { Save, X, Calendar, DollarSign, Ticket, ImageIcon } from "lucide-react";
+import { Save, X, Calendar, DollarSign, Ticket, ImageIcon, PlayCircle } from "lucide-react";
 
 interface RaffleFormData {
   title: string;
@@ -26,6 +26,8 @@ export default function RaffleEdit() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [generatingTickets, setGeneratingTickets] = useState(false);
+  const [ticketsCount, setTicketsCount] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<RaffleFormData>({
     title: "",
@@ -46,6 +48,7 @@ export default function RaffleEdit() {
 
   useEffect(() => {
     loadRaffleData();
+    loadTicketsCount();
   }, [id]);
 
   async function loadRaffleData() {
@@ -157,6 +160,73 @@ export default function RaffleEdit() {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
+
+  async function loadTicketsCount() {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await fetch(`/api/tickets?raffleId=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setTicketsCount(data.data.length);
+      }
+    } catch (err) {
+      console.error("Error cargando cantidad de tickets:", err);
+    }
+  }
+
+  async function handleGenerateTickets() {
+    const totalTickets = parseInt(formData.totalTickets || "0");
+
+    if (totalTickets <= 0) {
+      alert("Por favor, ingresa un número válido de tickets totales antes de generar.");
+      return;
+    }
+
+    const message = `¿Estás seguro de generar ${totalTickets.toLocaleString()} tickets para este sorteo?\n\n⚠️ IMPORTANTE: Asegúrate de haber GUARDADO los cambios primero si modificaste el "Total de Boletos".\n\nEsta acción creará todos los boletos en la base de datos según el valor guardado en la BD.`;
+
+    if (!confirm(message)) {
+      return;
+    }
+
+    setGeneratingTickets(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No hay sesión activa");
+      }
+
+      const response = await fetch(`/api/raffles/${id}/generate-tickets`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`¡Éxito! ${data.data.ticketsCreated.toLocaleString()} tickets generados correctamente`);
+        await loadTicketsCount(); // Recargar contador
+      } else {
+        setError(data.message || "Error al generar tickets");
+      }
+    } catch (err) {
+      console.error("Error al generar tickets:", err);
+      setError(err instanceof Error ? err.message : "Error desconocido");
+    } finally {
+      setGeneratingTickets(false);
+    }
+  }
 
   if (loadingData) {
     return (
@@ -310,10 +380,64 @@ export default function RaffleEdit() {
 
           {/* Configuración de Boletos */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="font-oswald text-2xl font-bold text-black mb-4 flex items-center gap-2">
-              <Ticket size={24} />
-              Configuración de Boletos
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-oswald text-2xl font-bold text-black flex items-center gap-2">
+                <Ticket size={24} />
+                Configuración de Boletos
+              </h2>
+
+              {/* Indicador de tickets y botón de generar */}
+              <div className="flex items-center gap-4">
+                {ticketsCount !== null && (
+                  <div className="text-sm font-raleway">
+                    {ticketsCount > 0 ? (
+                      <span className="text-green-600 font-semibold">
+                        ✓ {ticketsCount.toLocaleString()} / {parseInt(formData.totalTickets || "0").toLocaleString()} tickets generados
+                      </span>
+                    ) : (
+                      <span className="text-red-600 font-semibold">
+                        ⚠ 0 / {parseInt(formData.totalTickets || "0").toLocaleString()} tickets generados
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleGenerateTickets}
+                  disabled={generatingTickets}
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-raleway font-semibold px-4 py-2 rounded-lg transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={`Generará ${parseInt(formData.totalTickets || "0").toLocaleString()} tickets según el total guardado en la BD`}
+                >
+                  {generatingTickets ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Generando...
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircle size={18} />
+                      Generar Tickets
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Aviso importante */}
+            {ticketsCount === 0 && (
+              <div className="mb-4 bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+                <p className="text-sm font-raleway text-yellow-800">
+                  <strong>⚠️ Importante:</strong> Este sorteo no tiene tickets generados.
+                  Para generarlos, sigue estos pasos:
+                </p>
+                <ol className="mt-2 ml-4 text-sm font-raleway text-yellow-800 list-decimal space-y-1">
+                  <li>Ingresa el "Total de Boletos" deseado (ej: 10000)</li>
+                  <li>Haz clic en "Guardar Cambios" al final del formulario</li>
+                  <li>Luego haz clic en el botón "Generar Tickets" arriba</li>
+                </ol>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Total de Boletos */}

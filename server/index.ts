@@ -6,7 +6,7 @@ import { handleDbTest } from "./routes/db-test";
 import { handleRegister, handleLogin, handleGetProfile, verifyToken } from "./routes/auth";
 import { getRaffles, getRaffleById, getRafflePackages, getRafflePrizes } from "./routes/raffles";
 import { createRaffle, createPackages, createPrizes, updateRaffle, updateRaffleStatus, deleteRaffle, updatePackage, deletePackage, updatePrize, deletePrize, generateTickets, assignWinnersToPrizes } from "./routes/raffles-write";
-import { smartCheckout, completeCheckoutWithPassword, completeCheckoutWithLogin, getOrders, getOrderById, updateOrderStatus, updateOrder, deleteOrder, uploadReceipt, uploadReceiptMiddleware, getMyOrders } from "./routes/orders";
+import { smartCheckout, completeCheckoutWithPassword, completeCheckoutWithLogin, getOrders, getOrderById, updateOrderStatus, updateOrder, deleteOrder, uploadReceipt, uploadReceiptMiddleware, getMyOrders, consultTicketsByEmail, resendTicketsEmail } from "./routes/orders";
 import { requestPasswordReset, resetPassword } from "./routes/password-reset";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getTickets } from "./routes/tickets";
@@ -89,8 +89,14 @@ export function createServer() {
   app.get("/api/orders", verifyToken, getOrders);
   app.get("/api/orders/:id", verifyToken, getOrderById);
 
+  // Consulta pública de tickets por email (sin auth)
+  app.post("/api/orders/consult-tickets", consultTicketsByEmail);
+
   // Orders routes (POST - upload receipt for customers)
   app.post("/api/orders/:id/upload-receipt", verifyToken, uploadReceiptMiddleware, uploadReceipt);
+
+  // Orders routes (POST - resend tickets email - admin only)
+  app.post("/api/orders/:id/resend-tickets-email", verifyToken, requireAdmin, resendTicketsEmail);
 
   // Orders routes (PATCH, PUT, DELETE - admin only)
   app.patch("/api/orders/:id/status", verifyToken, requireAdmin, updateOrderStatus);

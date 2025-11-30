@@ -40,7 +40,10 @@ export default function Index() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [email, setEmail] = useState("");
   const [consultEmail, setConsultEmail] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(4);
+  const [consultLoading, setConsultLoading] = useState(false);
+  const [consultResults, setConsultResults] = useState<any>(null);
+  const [consultError, setConsultError] = useState("");
   const [raffle, setRaffle] = useState<Raffle | null>(null);
   const [packages, setPackages] = useState<Package[]>([]);
   const [prizes, setPrizes] = useState<Prize[]>([]);
@@ -131,6 +134,37 @@ export default function Index() {
 
     // Redirect to cart
     navigate("/cart");
+  };
+
+  const handleConsultTickets = async () => {
+    if (!consultEmail || !consultEmail.includes('@')) {
+      setConsultError("Por favor ingresa un correo válido");
+      return;
+    }
+
+    setConsultLoading(true);
+    setConsultError("");
+    setConsultResults(null);
+
+    try {
+      const response = await fetch("/api/orders/consult-tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: consultEmail }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setConsultResults(data.data);
+      } else {
+        setConsultError(data.message || "No se encontraron números para este correo");
+      }
+    } catch (err) {
+      setConsultError("Error de conexión. Intenta nuevamente.");
+    } finally {
+      setConsultLoading(false);
+    }
   };
 
   if (loading) {
@@ -559,10 +593,15 @@ export default function Index() {
             </div>
 
             {/* Additional Purchase Form */}
-            {/* <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
-              <h3 className="font-oswald text-2xl font-bold text-black mb-6 text-center">
-                Compra adicional
+            <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
+              <h3 className="font-oswald text-2xl font-bold text-black mb-2 text-center">
+                Compra Personalizada
               </h3>
+              {raffle && (
+                <p className="font-raleway text-sm text-gray-600 mb-6 text-center">
+                  de: <span className="font-bold text-[#d4af37]">{raffle.title}</span>
+                </p>
+              )}
               <div className="space-y-4">
                 <div>
                   <label className="block font-raleway font-semibold text-gray-700 mb-2">
@@ -570,23 +609,36 @@ export default function Index() {
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="4"
                     value={quantity}
-                    onChange={(e) => setQuantity(parseInt(e.target.value))}
+                    onChange={(e) => setQuantity(Math.max(4, parseInt(e.target.value) || 4))}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg font-raleway"
                   />
+                  <p className="text-sm text-gray-500 mt-2 font-raleway">
+                    Mínimo 4 números · Precio: ${(quantity * 1).toFixed(2)} USD
+                  </p>
                 </div>
                 <button
                   onClick={() => {
-                    const element = document.getElementById('paquetes');
-                    element?.scrollIntoView({ behavior: 'smooth' });
+                    if (!raffle) return;
+
+                    addItem({
+                      raffleId: raffle.id,
+                      raffleTitle: raffle.title,
+                      packageId: `custom-${quantity}`,
+                      packageName: `${quantity} números (Personalizado)`,
+                      price: quantity * 1,
+                      ticketCount: quantity,
+                    });
+
+                    navigate("/cart");
                   }}
                   className="w-full bg-black text-white py-3 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition"
                 >
-                  COMPRAR
+                  AGREGAR AL CARRITO
                 </button>
               </div>
-            </div> */}
+            </div>
           </div>
         </section>
 
@@ -597,29 +649,97 @@ export default function Index() {
               CONSULTA TUS NÚMEROS
             </h2>
 
-            <div className="bg-white rounded-lg p-8 max-w-md mx-auto shadow-md">
+            <div className="bg-white rounded-lg p-8 max-w-4xl mx-auto shadow-md">
               <p className="text-center text-gray-600 font-raleway mb-6">
-                Ingresa tu correo para consultar tus números y ver tus compras
+                Ingresa tu correo para consultar tus números y ver tus compras aprobadas
               </p>
-              <div className="space-y-4">
+
+              {/* Formulario */}
+              <div className="space-y-4 max-w-md mx-auto mb-6">
                 <input
                   type="email"
                   placeholder="tu@correo.com"
                   value={consultEmail}
-                  onChange={(e) => setConsultEmail(e.target.value)}
+                  onChange={(e) => {
+                    setConsultEmail(e.target.value);
+                    setConsultError("");
+                  }}
+                  onKeyPress={(e) => e.key === 'Enter' && handleConsultTickets()}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg font-raleway"
                 />
                 <button
-                  onClick={() => {
-                    if (consultEmail) {
-                      alert(`Consulta enviada a: ${consultEmail}`);
-                    }
-                  }}
-                  className="w-full bg-black text-white py-3 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition"
+                  onClick={handleConsultTickets}
+                  disabled={consultLoading}
+                  className="w-full bg-black text-white py-3 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition disabled:bg-gray-400"
                 >
-                  CONSULTAR
+                  {consultLoading ? "CONSULTANDO..." : "CONSULTAR"}
                 </button>
               </div>
+
+              {/* Error */}
+              {consultError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto mb-4">
+                  <p className="text-red-700 font-raleway text-sm text-center">{consultError}</p>
+                </div>
+              )}
+
+              {/* Resultados */}
+              {consultResults && (
+                <div className="mt-8">
+                  <h3 className="font-oswald text-2xl font-bold text-black text-center mb-6">
+                    📧 Resultados para: {consultResults.email}
+                  </h3>
+
+                  {consultResults.orders.map((order: any, idx: number) => (
+                    <div key={idx} className="bg-gray-50 rounded-lg p-6 mb-4 border-2 border-[#d4af37]">
+                      <div className="mb-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="font-oswald text-xl font-bold text-black">
+                              {order.raffleTitle}
+                            </h4>
+                            <p className="font-raleway text-sm text-gray-600">
+                              Orden: {order.orderNumber} | Cliente: {order.customerName}
+                            </p>
+                          </div>
+                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-oswald font-bold">
+                            APROBADA
+                          </span>
+                        </div>
+                      </div>
+
+                      <h5 className="font-oswald text-md font-bold text-black mb-3">
+                        🎫 TUS NÚMEROS DE LA SUERTE ({order.tickets.length})
+                      </h5>
+
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                        {order.tickets.map((ticket: any) => (
+                          <div
+                            key={ticket.id}
+                            className="relative bg-gradient-to-br from-[#d4af37] to-[#f0d98f] border-2 border-dashed border-black rounded-lg p-2 text-center"
+                            style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                          >
+                            <div className="absolute top-1/2 -left-1.5 w-3 h-3 bg-gray-50 rounded-full transform -translate-y-1/2"></div>
+                            <div className="absolute top-1/2 -right-1.5 w-3 h-3 bg-gray-50 rounded-full transform -translate-y-1/2"></div>
+
+                            <p className="font-raleway text-[7px] font-semibold text-black uppercase">TICKET</p>
+                            <p className="font-oswald text-xl font-bold text-black leading-none my-1">
+                              {ticket.ticketNumber.toString().padStart(4, "0")}
+                            </p>
+                            <p className="font-raleway text-[6px] font-semibold text-black">IMPACTO</p>
+
+                            {ticket.isWinner && (
+                              <div className="absolute -top-1 -right-1 bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                                ✓
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </section>

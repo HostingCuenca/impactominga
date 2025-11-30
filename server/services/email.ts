@@ -108,59 +108,204 @@ export async function sendOrderConfirmationEmail(
       <!DOCTYPE html>
       <html>
       <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #10b981; color: white; padding: 20px; text-align: center; }
-          .content { padding: 20px; background: #f9fafb; }
-          .order-box { background: white; padding: 15px; border-radius: 6px; margin: 15px 0; }
-          .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
+          @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@400;500;600;700&display=swap');
+
+          body {
+            font-family: 'Raleway', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+          }
+          .header {
+            background: #000000;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #d4af37;
+          }
+          .logo {
+            max-width: 180px;
+            height: auto;
+          }
+          .banner {
+            background: #d4af37;
+            color: #000000;
+            text-align: center;
+            padding: 12px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+          }
+          .content {
+            padding: 30px 20px;
+            background: #ffffff;
+          }
+          .greeting {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 15px;
+          }
+          .order-box {
+            background: #f9fafb;
+            border-left: 4px solid #d4af37;
+            padding: 20px;
             border-radius: 6px;
             margin: 20px 0;
           }
-          .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+          .order-box p {
+            margin: 8px 0;
+            font-size: 15px;
+          }
+          .order-box strong {
+            color: #000000;
+            font-weight: 600;
+          }
+          .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin: 25px 0 15px 0;
+          }
+          .bank-details {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #d4af37;
+          }
+          .bank-details p {
+            margin: 10px 0;
+            font-size: 15px;
+          }
+          .account-number {
+            font-family: monospace;
+            font-size: 18px;
+            color: #d4af37;
+            font-weight: bold;
+          }
+          .total-amount {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 20px;
+          }
+          .whatsapp-button {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 20px 0;
+            text-align: center;
+          }
+          .footer {
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 13px;
+          }
+          .footer-gold {
+            color: #d4af37;
+            font-weight: 600;
+          }
+          ol {
+            padding-left: 20px;
+          }
+          ol li {
+            margin: 15px 0;
+            line-height: 1.8;
+          }
         </style>
       </head>
       <body>
         <div class="container">
+          <!-- Header con Logo -->
           <div class="header">
-            <h1>✅ ¡Orden Creada!</h1>
+            <img src="${process.env.FRONTEND_URL}/logo.png" alt="Impacto Minga" class="logo">
           </div>
-          <div class="content">
-            <h2>Hola ${firstName},</h2>
-            <p>Tu orden ha sido creada exitosamente. A continuación los detalles:</p>
 
+          <!-- Banner Dorado -->
+          <div class="banner">
+            ✅ ¡ORDEN CREADA EXITOSAMENTE!
+          </div>
+
+          <!-- Contenido -->
+          <div class="content">
+            <h2 class="greeting">¡Hola ${firstName}!</h2>
+            <p>Tu orden ha sido creada exitosamente. A continuación encontrarás todos los detalles:</p>
+
+            <!-- Detalles de la Orden -->
             <div class="order-box">
               <p><strong>Número de Orden:</strong> ${orderNumber}</p>
               <p><strong>Sorteo:</strong> ${raffleTitle}</p>
               <p><strong>Cantidad de Boletos:</strong> ${quantity}</p>
-              <p><strong>Total:</strong> $${total.toFixed(2)}</p>
+              <p><strong>Total a Pagar:</strong> <span class="total-amount">$${total.toFixed(2)} USD</span></p>
             </div>
 
-            <h3>📋 Pasos para completar tu compra:</h3>
+            <!-- Pasos para Completar -->
+            <h3 class="section-title">📋 Pasos para Completar tu Compra</h3>
             <ol>
-              <li>Realiza la transferencia bancaria:
-                <ul>
-                  <li>Banco: Pichincha</li>
-                  <li>Cuenta: 2100123456 (Corriente)</li>
-                  <li>Beneficiario: Impacto Minga</li>
-                  <li>Monto: $${total.toFixed(2)}</li>
-                  <li>Referencia: ${orderNumber}</li>
-                </ul>
+              <li>
+                <strong>Realiza la transferencia bancaria:</strong>
+                <div class="bank-details">
+                  <p><strong>Banco:</strong> BANCO PICHINCHA</p>
+                  <p><strong>Tipo de Cuenta:</strong> CUENTA AHORRO</p>
+                  <p><strong># de Cuenta:</strong> <span class="account-number">2213830211</span></p>
+                  <p><strong>Titular:</strong> MINGA TIPANLUIZA RICHARD DUFFER</p>
+                  <p><strong>C.I:</strong> 1501260440</p>
+                  <p><strong>Monto:</strong> <span class="total-amount">$${total.toFixed(2)}</span></p>
+                  <p><strong>Referencia:</strong> ${orderNumber}</p>
+                </div>
               </li>
-              <li>Sube tu comprobante en "Mi Cuenta"</li>
-              <li>Espera la verificación (24-48 horas)</li>
+              <li><strong>Envía tu comprobante por WhatsApp</strong> para verificación rápida y segura</li>
+              <li><strong>Espera la verificación</strong> (24-48 horas hábiles)</li>
             </ol>
 
-            <a href="${process.env.FRONTEND_URL}/dashboard/my-orders" class="button">Ver Mi Orden</a>
+            <!-- Botón WhatsApp -->
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://wa.me/593980212915?text=Hola%2C%20realicé%20una%20transferencia%20para%20la%20orden%20${orderNumber}%20por%20%24${total.toFixed(2)}%20y%20adjunto%20el%20comprobante." class="whatsapp-button">
+                📱 ENVIAR COMPROBANTE POR WHATSAPP
+              </a>
+            </div>
+
+            <!-- Botón Ver Mi Orden - COMENTADO -->
+            <!-- <div style="text-align: center; margin: 20px 0;">
+              <a href="${process.env.FRONTEND_URL}/dashboard/my-orders" style="display: inline-block; background: #000000; color: #d4af37; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-family: 'Oswald', sans-serif; font-weight: 600; border: 2px solid #d4af37;">
+                VER MI ORDEN
+              </a>
+            </div> -->
+
+            <p style="margin-top: 30px; font-size: 14px; color: #666;">
+              Si tienes alguna pregunta, no dudes en contactarnos por WhatsApp o nuestras redes sociales.
+            </p>
           </div>
+
+          <!-- Footer -->
           <div class="footer">
-            <p>© 2025 Impacto Minga. Todos los derechos reservados.</p>
+            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">Todos los derechos reservados</p>
+            <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
+            <p style="margin: 5px 0;">
+              <span class="footer-gold">Instagram:</span> @impacto_minga |
+              <span class="footer-gold">TikTok:</span> @impacto_minga
+            </p>
           </div>
         </div>
       </body>
@@ -188,75 +333,248 @@ export async function sendOrderApprovedEmail(
   raffleTitle: string,
   ticketNumbers: number[]
 ) {
-  const ticketsList = ticketNumbers.join(", ");
+  // Generar los tickets en grupos de 3 columnas
+  const ticketsHTML = ticketNumbers.map(num => `
+    <div style="display: inline-block; width: 30%; margin: 1%; vertical-align: top;">
+      <div style="
+        background: linear-gradient(135deg, #d4af37 0%, #f0d98f 100%);
+        border: 3px dashed #000000;
+        border-radius: 12px;
+        padding: 20px 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        position: relative;
+        overflow: hidden;
+      ">
+        <!-- Círculos decorativos en los bordes -->
+        <div style="
+          position: absolute;
+          top: 50%;
+          left: -10px;
+          width: 20px;
+          height: 20px;
+          background: #ffffff;
+          border-radius: 50%;
+          transform: translateY(-50%);
+        "></div>
+        <div style="
+          position: absolute;
+          top: 50%;
+          right: -10px;
+          width: 20px;
+          height: 20px;
+          background: #ffffff;
+          border-radius: 50%;
+          transform: translateY(-50%);
+        "></div>
+
+        <!-- Contenido del ticket -->
+        <div style="position: relative; z-index: 1;">
+          <p style="
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #000000;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          ">TICKET</p>
+          <p style="
+            font-family: 'Oswald', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #000000;
+            margin: 0;
+            line-height: 1;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.3);
+          ">${num.toString().padStart(4, '0')}</p>
+          <p style="
+            font-family: 'Raleway', sans-serif;
+            font-size: 9px;
+            color: #000000;
+            margin: 5px 0 0 0;
+            font-weight: 600;
+          ">IMPACTO MINGA</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
 
   const mailOptions = {
     from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
     to: email,
-    subject: `¡Pago Aprobado! Tus números: ${ticketNumbers[0]}... - Impacto Minga`,
+    subject: `🎉 ¡Pago Aprobado! Tus números del sorteo - Impacto Minga`,
     html: `
       <!DOCTYPE html>
       <html>
       <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #10b981; color: white; padding: 20px; text-align: center; }
-          .content { padding: 20px; background: #f9fafb; }
-          .tickets-box {
-            background: white;
-            padding: 20px;
-            border-radius: 6px;
-            margin: 15px 0;
-            border: 2px solid #10b981;
+          @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@400;500;600;700&display=swap');
+
+          body {
+            font-family: 'Raleway', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+          }
+          .header {
+            background: #000000;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #d4af37;
+          }
+          .logo {
+            max-width: 180px;
+            height: auto;
+          }
+          .banner {
+            background: #d4af37;
+            color: #000000;
+            text-align: center;
+            padding: 15px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: 1px;
+          }
+          .content {
+            padding: 30px 20px;
+            background: #ffffff;
+          }
+          .greeting {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 15px;
             text-align: center;
           }
-          .ticket-number {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 8px 12px;
-            margin: 4px;
-            border-radius: 4px;
-            font-weight: bold;
+          .success-icon {
+            text-align: center;
+            font-size: 60px;
+            margin: 20px 0;
           }
-          .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
+          .order-info {
+            background: #f9fafb;
+            border-left: 4px solid #d4af37;
+            padding: 15px 20px;
             border-radius: 6px;
             margin: 20px 0;
           }
-          .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+          .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin: 30px 0 20px 0;
+            text-align: center;
+            text-transform: uppercase;
+          }
+          .tickets-container {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #d4af37;
+          }
+          .footer {
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 13px;
+          }
+          .footer-gold {
+            color: #d4af37;
+            font-weight: 600;
+          }
+          @media only screen and (max-width: 600px) {
+            .tickets-container > div {
+              width: 48% !important;
+            }
+          }
         </style>
       </head>
       <body>
         <div class="container">
+          <!-- Header con Logo -->
           <div class="header">
-            <h1>🎉 ¡Pago Aprobado!</h1>
+            <img src="${process.env.FRONTEND_URL}/logo.png" alt="Impacto Minga" class="logo">
           </div>
-          <div class="content">
-            <h2>¡Felicidades ${firstName}!</h2>
-            <p>Tu pago ha sido verificado y aprobado. Ya tienes tus números para el sorteo:</p>
 
-            <div class="tickets-box">
-              <h3>${raffleTitle}</h3>
-              <p><strong>Orden:</strong> ${orderNumber}</p>
-              <p><strong>Tus números:</strong></p>
-              <div>
-                ${ticketNumbers.map(num => `<span class="ticket-number">${num}</span>`).join('')}
-              </div>
+          <!-- Banner Dorado -->
+          <div class="banner">
+            🎉 ¡PAGO APROBADO - ORDEN CONFIRMADA!
+          </div>
+
+          <!-- Contenido -->
+          <div class="content">
+            <div class="success-icon">✅</div>
+            <h2 class="greeting">¡Felicidades ${firstName}!</h2>
+
+            <p style="text-align: center; font-size: 16px; color: #333; margin: 20px 0;">
+              Tu pago ha sido <strong style="color: #d4af37;">verificado y aprobado</strong> exitosamente.
+            </p>
+
+            <!-- Información de la Orden -->
+            <div class="order-info">
+              <p style="margin: 8px 0;"><strong>📋 Número de Orden:</strong> ${orderNumber}</p>
+              <p style="margin: 8px 0;"><strong>🎯 Sorteo:</strong> ${raffleTitle}</p>
+              <p style="margin: 8px 0;"><strong>🎟️ Total de Números:</strong> ${ticketNumbers.length}</p>
             </div>
 
-            <p>¡Mucha suerte! 🍀</p>
-            <p>Puedes ver tus números en cualquier momento desde tu cuenta.</p>
+            <!-- Título de Tickets -->
+            <h3 class="section-title">🎫 TUS NÚMEROS DE LA SUERTE</h3>
 
-            <a href="${process.env.FRONTEND_URL}/dashboard/my-orders" class="button">Ver Mis Números</a>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">
+              Guarda estos números. ¡Uno de ellos podría hacerte ganar!
+            </p>
+
+            <!-- Tickets en Columnas de 3 -->
+            <div class="tickets-container">
+              ${ticketsHTML}
+            </div>
+
+            <!-- Mensaje de Suerte -->
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d4af37; padding: 20px; border-radius: 8px; margin: 30px 0; text-align: center;">
+              <p style="margin: 0; font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #000000;">
+                🍀 ¡MUCHA SUERTE!
+              </p>
+              <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+                Mantente atento a nuestras redes sociales para conocer los ganadores
+              </p>
+            </div>
+
+            <!-- Botón Ver Mis Números - COMENTADO -->
+            <!-- <div style="text-align: center; margin: 25px 0;">
+              <a href="${process.env.FRONTEND_URL}/dashboard/my-orders" style="display: inline-block; background: #000000; color: #d4af37; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; border: 2px solid #d4af37;">
+                VER MIS NÚMEROS
+              </a>
+            </div> -->
+
+            <p style="margin-top: 30px; font-size: 14px; color: #666; text-align: center;">
+              Puedes consultar tus números en cualquier momento desde tu cuenta o contactarnos por WhatsApp.
+            </p>
           </div>
+
+          <!-- Footer -->
           <div class="footer">
-            <p>© 2025 Impacto Minga. Todos los derechos reservados.</p>
+            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">Todos los derechos reservados</p>
+            <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
+            <p style="margin: 5px 0;">
+              <span class="footer-gold">Instagram:</span> @impacto_minga |
+              <span class="footer-gold">TikTok:</span> @impacto_minga
+            </p>
           </div>
         </div>
       </body>
@@ -365,40 +683,152 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
       <!DOCTYPE html>
       <html>
       <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #2563eb; color: white; padding: 20px; text-align: center; }
-          .content { padding: 20px; background: #f9fafb; }
-          .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
+          @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Raleway:wght@400;500;600;700&display=swap');
+
+          body {
+            font-family: 'Raleway', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+          }
+          .header {
+            background: #000000;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 4px solid #d4af37;
+          }
+          .logo {
+            max-width: 180px;
+            height: auto;
+          }
+          .banner {
+            background: #d4af37;
+            color: #000000;
+            text-align: center;
+            padding: 12px;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+          }
+          .content {
+            padding: 30px 20px;
+            background: #ffffff;
+          }
+          .greeting {
+            font-family: 'Oswald', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 15px;
+          }
+          .credentials-box {
+            background: #fffbeb;
+            border-left: 4px solid #d4af37;
+            padding: 20px;
             border-radius: 6px;
             margin: 20px 0;
           }
-          .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+          .credentials-box p {
+            margin: 8px 0;
+            font-size: 15px;
+          }
+          .password-code {
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid #d4af37;
+          }
+          .footer {
+            background: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 13px;
+          }
+          .footer-gold {
+            color: #d4af37;
+            font-weight: 600;
+          }
         </style>
       </head>
       <body>
         <div class="container">
+          <!-- Header con Logo -->
           <div class="header">
-            <h1>¡Bienvenido a Impacto Minga!</h1>
+            <img src="${process.env.FRONTEND_URL}/logo.png" alt="Impacto Minga" class="logo">
           </div>
+
+          <!-- Banner Dorado -->
+          <div class="banner">
+            🎉 ¡BIENVENIDO A IMPACTO MINGA!
+          </div>
+
+          <!-- Contenido -->
           <div class="content">
-            <h2>Hola ${firstName},</h2>
-            <p>¡Gracias por unirte a Impacto Minga! 🎉</p>
-            <p>Tu cuenta ha sido creada exitosamente.</p>
-            <p>Ahora puedes participar en nuestros sorteos y hacer seguimiento de tus órdenes.</p>
+            <h2 class="greeting">¡Hola ${firstName}!</h2>
+            <p>¡Gracias por unirte a <strong style="color: #d4af37;">Impacto Minga</strong>!</p>
+            <p>Estamos emocionados de tenerte con nosotros.</p>
 
-            <a href="${process.env.FRONTEND_URL}/raffles" class="button">Ver Sorteos Activos</a>
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d4af37; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;">
+              <p style="margin: 0; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: #000000;">
+                ✅ TU CUENTA HA SIDO CREADA EXITOSAMENTE
+              </p>
+              <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+                Ya puedes participar en nuestros sorteos y cambiar vidas
+              </p>
+            </div>
 
-            <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+            <p style="margin-top: 25px; font-size: 15px; line-height: 1.8;">
+              Cada número que compras no solo te da la oportunidad de ganar increíbles premios, sino que también contribuye a una causa noble. <strong style="color: #d4af37;">¡Gracias por ser parte del cambio!</strong>
+            </p>
+
+            <p style="background: #f9fafb; padding: 15px; border-radius: 6px; font-size: 14px; margin-top: 20px;">
+              📧 <strong>Recibirás un correo</strong> cuando tu pago sea aprobado con tus números asignados
+            </p>
+
+            <!-- Credenciales - COMENTADO (Ya no se envían) -->
+            <!-- <div class="credentials-box">
+              <p style="margin: 0 0 15px 0; font-weight: bold; color: #000000; font-size: 16px;">🔐 Tus Credenciales de Acceso:</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Contraseña:</strong> <span class="password-code">impactopassword</span></p>
+            </div> -->
+
+            <!-- Botón - COMENTADO -->
+            <!-- <div style="text-align: center; margin: 25px 0;">
+              <a href="${process.env.FRONTEND_URL}/raffles" style="display: inline-block; background: #000000; color: #d4af37; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-family: 'Oswald', sans-serif; font-weight: 600; border: 2px solid #d4af37;">
+                VER SORTEOS ACTIVOS
+              </a>
+            </div> -->
+
+            <p style="margin-top: 30px; font-size: 14px; color: #666; text-align: center;">
+              Si tienes alguna pregunta, contáctanos por <strong>WhatsApp: +593 98 021 2915</strong>
+            </p>
           </div>
+
+          <!-- Footer -->
           <div class="footer">
-            <p>© 2025 Impacto Minga. Todos los derechos reservados.</p>
+            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">Todos los derechos reservados</p>
+            <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
+            <p style="margin: 5px 0;">
+              <span class="footer-gold">Instagram:</span> @impacto_minga |
+              <span class="footer-gold">TikTok:</span> @impacto_minga
+            </p>
           </div>
         </div>
       </body>

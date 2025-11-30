@@ -79,6 +79,8 @@ export default function OrderDetail() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showResendEmailModal, setShowResendEmailModal] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   const [paymentReference, setPaymentReference] = useState("");
@@ -191,6 +193,35 @@ export default function OrderDetail() {
       alert("Error de conexión. Intenta nuevamente.");
     } finally {
       setActionLoading(false);
+    }
+  }
+
+  async function handleResendEmail() {
+    if (!order) return;
+
+    setResendingEmail(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/orders/${id}/resend-tickets-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setShowResendEmailModal(false);
+        alert("✅ Correo enviado exitosamente");
+      } else {
+        alert(data.message || "Error al enviar el correo");
+      }
+    } catch (err) {
+      alert("Error de conexión. Intenta nuevamente.");
+    } finally {
+      setResendingEmail(false);
     }
   }
 
@@ -638,17 +669,28 @@ export default function OrderDetail() {
           {/* Approval Info */}
           {order.status === "approved" && order.approvedAt && (
             <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6 mt-6">
-              <h3 className="font-oswald text-xl font-bold text-green-800 mb-2">
-                ORDEN APROBADA
-              </h3>
-              <p className="font-raleway text-green-700">
-                Aprobada el{" "}
-                {new Date(order.approvedAt).toLocaleDateString("es-EC", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-oswald text-xl font-bold text-green-800 mb-2">
+                    ORDEN APROBADA
+                  </h3>
+                  <p className="font-raleway text-green-700">
+                    Aprobada el{" "}
+                    {new Date(order.approvedAt).toLocaleDateString("es-EC", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowResendEmailModal(true)}
+                  className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-oswald font-bold hover:bg-green-700 transition"
+                >
+                  <Mail className="w-4 h-4" />
+                  REENVIAR TICKETS
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -792,6 +834,53 @@ export default function OrderDetail() {
                     <>
                       <XCircle className="w-5 h-5" />
                       RECHAZAR
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Resend Email Modal */}
+        {showResendEmailModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-8 max-w-md w-full">
+              <h2 className="font-oswald text-2xl font-bold text-black mb-4">
+                REENVIAR CORREO CON TICKETS
+              </h2>
+              <p className="font-raleway text-gray-700 mb-6">
+                ¿Estás seguro de que deseas reenviar el correo con los números de rifa asignados?
+              </p>
+
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <p className="font-raleway text-sm text-blue-900">
+                  <strong>📧 Se enviará a:</strong> {order?.customerEmail}
+                </p>
+                <p className="font-raleway text-sm text-blue-900 mt-2">
+                  <strong>🎫 Números asignados:</strong> {order?.tickets?.length || 0}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowResendEmailModal(false)}
+                  disabled={resendingEmail}
+                  className="flex-1 px-6 py-3 bg-gray-300 text-black rounded-lg font-oswald font-bold hover:bg-gray-400 transition disabled:opacity-50"
+                >
+                  CANCELAR
+                </button>
+                <button
+                  onClick={handleResendEmail}
+                  disabled={resendingEmail}
+                  className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-oswald font-bold hover:bg-green-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {resendingEmail ? (
+                    "ENVIANDO..."
+                  ) : (
+                    <>
+                      <Mail className="w-5 h-5" />
+                      ENVIAR
                     </>
                   )}
                 </button>

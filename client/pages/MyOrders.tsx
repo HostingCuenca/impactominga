@@ -323,16 +323,39 @@ export default function MyOrders() {
                               </span>
                             </div>
                             {order.tickets && order.tickets.length > 0 && (
-                              <div>
-                                <span className="text-gray-600 block mb-2">Números asignados:</span>
-                                <div className="flex flex-wrap gap-2">
+                              <div className="mt-4">
+                                <h5 className="font-oswald text-md font-bold text-black mb-3">
+                                  🎫 TUS NÚMEROS DE LA SUERTE
+                                </h5>
+                                <div className="grid grid-cols-3 gap-2">
                                   {order.tickets.map((ticket) => (
-                                    <span
+                                    <div
                                       key={ticket.id}
-                                      className="inline-block bg-[#d4af37] text-black font-bold px-3 py-1 rounded-lg"
+                                      className="relative bg-gradient-to-br from-[#d4af37] to-[#f0d98f] border-2 border-dashed border-black rounded-lg p-3 text-center"
+                                      style={{
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                                      }}
                                     >
-                                      {ticket.ticketNumber.toString().padStart(4, "0")}
-                                    </span>
+                                      {/* Círculos decorativos */}
+                                      <div className="absolute top-1/2 -left-2 w-4 h-4 bg-gray-50 rounded-full transform -translate-y-1/2"></div>
+                                      <div className="absolute top-1/2 -right-2 w-4 h-4 bg-gray-50 rounded-full transform -translate-y-1/2"></div>
+
+                                      {/* Contenido */}
+                                      <p className="font-raleway text-[8px] font-semibold text-black uppercase tracking-wider">
+                                        TICKET
+                                      </p>
+                                      <p className="font-oswald text-2xl font-bold text-black leading-none my-1">
+                                        {ticket.ticketNumber.toString().padStart(4, "0")}
+                                      </p>
+                                      <p className="font-raleway text-[7px] font-semibold text-black">
+                                        IMPACTO MINGA
+                                      </p>
+                                      {ticket.isWinner && (
+                                        <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                          ✓
+                                        </div>
+                                      )}
+                                    </div>
                                   ))}
                                 </div>
                               </div>

@@ -22,8 +22,12 @@ export default function Checkout() {
   // Modal states
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [modalPassword, setModalPassword] = useState("");
-  const [modalPasswordConfirm, setModalPasswordConfirm] = useState("");
+  // HARDCODED PASSWORD: Para facilitar el registro, todos los usuarios tendrán la misma contraseña
+  // Descomentar las siguientes líneas para reactivar el input manual de contraseña
+  // const [modalPassword, setModalPassword] = useState("");
+  // const [modalPasswordConfirm, setModalPasswordConfirm] = useState("");
+  const [modalPassword] = useState("impactopassword");
+  const [modalPasswordConfirm] = useState("impactopassword");
   const [loginPassword, setLoginPassword] = useState("");
 
   // Form data
@@ -135,20 +139,23 @@ export default function Checkout() {
   };
 
   const handleCreateWithPassword = async () => {
-    if (modalPassword.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
-      return;
-    }
-
-    if (modalPassword !== modalPasswordConfirm) {
-      setError("Las contraseñas no coinciden");
-      return;
-    }
+    // VALIDACIONES DESHABILITADAS - La contraseña está hardcodeada
+    // Descomentar para reactivar validación manual:
+    // if (modalPassword.length < 6) {
+    //   setError("La contraseña debe tener al menos 6 caracteres");
+    //   return;
+    // }
+    // if (modalPassword !== modalPasswordConfirm) {
+    //   setError("Las contraseñas no coinciden");
+    //   return;
+    // }
 
     setLoading(true);
     setError("");
 
     try {
+      console.log("Enviando checkout con contraseña:", modalPassword); // Debug
+
       const response = await fetch("/api/checkout/with-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -156,11 +163,12 @@ export default function Checkout() {
           raffleId,
           packageId,
           ...formData,
-          password: modalPassword,
+          password: modalPassword, // "impactopassword" - 15 caracteres
         }),
       });
 
       const data = await response.json();
+      console.log("Respuesta del servidor:", data); // Debug
 
       if (data.success) {
         // Auto-login
@@ -170,6 +178,7 @@ export default function Checkout() {
         setError(data.message || "Error al crear cuenta");
       }
     } catch (err) {
+      console.error("Error en handleCreateWithPassword:", err); // Debug
       setError("Error de conexión. Intenta nuevamente.");
     } finally {
       setLoading(false);
@@ -385,7 +394,7 @@ export default function Checkout() {
                 {/* Shipping Address */}
                 <div className="bg-white rounded-lg p-8">
                   <h2 className="font-oswald text-2xl font-bold text-black mb-6">
-                    DIRECCIÓN DE ENVÍO
+                    DIRECCIÓN
                   </h2>
 
                   <div className="mb-4">
@@ -573,16 +582,40 @@ export default function Checkout() {
         </section>
       </main>
 
-      {/* Password Modal */}
+      {/* Password Modal - AUTOMATIC PASSWORD MODE */}
+      {/* Los usuarios se crearán automáticamente con la contraseña: "impactopassword" */}
+      {/* Para reactivar el modal de contraseña manual, descomentar el código comentado arriba */}
       {showPasswordModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-8 max-w-md w-full">
-            <h2 className="font-oswald text-2xl font-bold text-black mb-4">
-              Crea tu Contraseña
-            </h2>
-            <p className="text-gray-600 font-raleway mb-6">
-              Para completar tu compra y consultar el estado de tu orden, crea una contraseña:
-            </p>
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <h2 className="font-oswald text-2xl font-bold text-black mb-2">
+                ¡Confirma tu Compra!
+              </h2>
+            </div>
+
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+              <p className="font-raleway text-sm text-gray-700 mb-3">
+                <strong className="text-blue-900">📋 Pasos siguientes:</strong>
+              </p>
+              <ol className="font-raleway text-sm text-gray-700 space-y-2 ml-4 list-decimal">
+
+                <li>Recibirás un correo con los detalles de tu orden</li>
+                <li>Realiza la transferencia bancaria</li>
+                <li>Envía el comprobante por WhatsApp al <strong className="text-blue-900">+593 98 021 2915</strong></li>
+              </ol>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <p className="font-raleway text-sm text-yellow-800">
+                <strong>📧 Importante:</strong> Recibirás tus credenciales de acceso por correo electrónico para consultar el estado de tu orden.
+              </p>
+            </div>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 font-raleway text-sm">
@@ -590,7 +623,8 @@ export default function Checkout() {
               </div>
             )}
 
-            <div className="space-y-4">
+            {/* CAMPOS OCULTOS - Mantener comentados para restaurar funcionalidad manual */}
+            {/* <div className="space-y-4">
               <div>
                 <label className="block font-raleway font-semibold text-gray-700 mb-2">
                   Contraseña
@@ -622,25 +656,25 @@ export default function Checkout() {
                   />
                 </div>
               </div>
+            </div> */}
 
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={handleCreateWithPassword}
-                  disabled={loading}
-                  className="flex-1 bg-black text-white py-3 font-oswald font-bold rounded-lg hover:bg-gray-800 transition disabled:bg-gray-400"
-                >
-                  {loading ? "CREANDO..." : "CREAR CUENTA Y COMPRAR"}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowPasswordModal(false);
-                    setError("");
-                  }}
-                  className="flex-1 bg-gray-300 text-black py-3 font-oswald font-bold rounded-lg hover:bg-gray-400 transition"
-                >
-                  CANCELAR
-                </button>
-              </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleCreateWithPassword}
+                disabled={loading}
+                className="flex-1 bg-green-600 text-white py-4 font-oswald font-bold text-lg rounded-lg hover:bg-green-700 transition disabled:bg-gray-400 shadow-lg"
+              >
+                {loading ? "PROCESANDO..." : "✓ ACEPTAR Y CREAR ORDEN"}
+              </button>
+              <button
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setError("");
+                }}
+                className="px-6 bg-gray-300 text-black py-4 font-oswald font-bold rounded-lg hover:bg-gray-400 transition"
+              >
+                CANCELAR
+              </button>
             </div>
           </div>
         </div>

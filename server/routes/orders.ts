@@ -263,17 +263,40 @@ async function createOrderForUser(userId: string, data: any) {
   }
 
   // Obtener información del paquete
-  const packageQuery = await pool.query(
-    `SELECT id, quantity, price FROM pricing_packages
-     WHERE id = $1 AND raffle_id = $2 AND is_active = TRUE`,
-    [packageId, raffleId]
-  );
+  let pkg;
 
-  if (packageQuery.rows.length === 0) {
-    throw new Error("Paquete no encontrado o no disponible");
+  // Verificar si es un paquete personalizado (custom-X)
+  if (typeof packageId === 'string' && packageId.startsWith('custom-')) {
+    // Paquete personalizado - extraer cantidad del ID
+    const customQuantity = parseInt(packageId.replace('custom-', ''));
+
+    if (isNaN(customQuantity) || customQuantity < 4) {
+      throw new Error("Cantidad personalizada inválida (mínimo 4 números)");
+    }
+
+    // Calcular precio: $1 por boleto
+    pkg = {
+      id: packageId,
+      quantity: customQuantity,
+      price: customQuantity * 1.0 // $1 USD por boleto
+    };
+
+    console.log(`[createOrderForUser] Paquete personalizado: ${customQuantity} números por $${pkg.price}`);
+  } else {
+    // Paquete predefinido - buscar en la base de datos
+    const packageQuery = await pool.query(
+      `SELECT id, quantity, price FROM pricing_packages
+       WHERE id = $1 AND raffle_id = $2 AND is_active = TRUE`,
+      [packageId, raffleId]
+    );
+
+    if (packageQuery.rows.length === 0) {
+      throw new Error("Paquete no encontrado o no disponible");
+    }
+
+    pkg = packageQuery.rows[0];
+    console.log(`[createOrderForUser] Paquete predefinido: ${pkg.quantity} números por $${pkg.price}`);
   }
-
-  const pkg = packageQuery.rows[0];
 
   // Calcular tickets vendidos desde la tabla tickets
   const ticketsSoldQuery = await pool.query(
@@ -830,6 +853,22 @@ export async function updateOrderStatus(req: Request, res: Response) {
         const raffleId = orderItem.raffle_id;
         const quantity = orderItem.quantity;
 
+        console.log(`[updateOrderStatus] Approving order ${id}: Need ${quantity} tickets for raffle ${raffleId}`);
+
+        // DEBUG: Contar todos los tickets del sorteo
+        const totalTicketsQuery = await pool.query(
+          `SELECT COUNT(*) as total FROM tickets WHERE raffle_id = $1`,
+          [raffleId]
+        );
+        console.log(`[updateOrderStatus] DEBUG - Total tickets in raffle: ${totalTicketsQuery.rows[0].total}`);
+
+        // DEBUG: Contar tickets disponibles
+        const availableCountQuery = await pool.query(
+          `SELECT COUNT(*) as available FROM tickets WHERE raffle_id = $1 AND status = 'available'`,
+          [raffleId]
+        );
+        console.log(`[updateOrderStatus] DEBUG - Available tickets: ${availableCountQuery.rows[0].available}`);
+
         // Obtener tickets disponibles EXCLUYENDO números ganadores no revelados
         const availableTicketsQuery = await pool.query(
           `SELECT id, ticket_number FROM tickets
@@ -849,7 +888,7 @@ export async function updateOrderStatus(req: Request, res: Response) {
         console.log(`[updateOrderStatus] Found ${availableTicketsQuery.rows.length} available tickets (excluding locked winners)`);
 
         if (availableTicketsQuery.rows.length < quantity) {
-          throw new Error(`No hay suficientes tickets disponibles. Se necesitan ${quantity} pero solo hay ${availableTicketsQuery.rows.length}`);
+          throw new Error(`No hay suficientes tickets disponibles. Se necesitan ${quantity} pero solo hay ${availableTicketsQuery.rows.length}. Total en sorteo: ${totalTicketsQuery.rows[0].total}, Disponibles: ${availableCountQuery.rows[0].available}`);
         }
 
         // Asignar los tickets a la orden
@@ -1230,6 +1269,193 @@ export async function uploadReceipt(req: Request, res: Response) {
     res.status(500).json({
       success: false,
       message: error instanceof Error ? error.message : "Error al subir comprobante"
+    });
+  }
+}
+
+// =====================================================
+// POST: Reenviar email con tickets asignados (Admin only)
+// =====================================================
+export async function resendTicketsEmail(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+
+    // Obtener la orden
+    const orderQuery = await pool.query(
+      `SELECT * FROM orders WHERE id = $1`,
+      [id]
+    );
+
+    if (orderQuery.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Orden no encontrada"
+      });
+    }
+
+    const order = orderQuery.rows[0];
+
+    // Verificar que la orden esté aprobada
+    if (order.status !== 'approved' && order.status !== 'completed') {
+      return res.status(400).json({
+        success: false,
+        message: "Solo se pueden reenviar tickets de órdenes aprobadas"
+      });
+    }
+
+    // Obtener números de boletos asignados
+    const ticketsQuery = await pool.query(
+      "SELECT ticket_number FROM tickets WHERE order_id = $1 ORDER BY ticket_number ASC",
+      [id]
+    );
+
+    if (ticketsQuery.rows.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Esta orden no tiene tickets asignados"
+      });
+    }
+
+    const ticketNumbers = ticketsQuery.rows.map(row => row.ticket_number);
+
+    // Obtener información del sorteo
+    const raffleQuery = await pool.query(
+      `SELECT r.title FROM order_items oi
+       INNER JOIN raffles r ON oi.raffle_id = r.id
+       WHERE oi.order_id = $1 LIMIT 1`,
+      [id]
+    );
+
+    if (raffleQuery.rows.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No se encontró información del sorteo"
+      });
+    }
+
+    // Enviar email
+    const emailSent = await sendOrderApprovedEmail(
+      order.customer_email,
+      order.customer_first_name,
+      order.order_number,
+      raffleQuery.rows[0].title,
+      ticketNumbers
+    );
+
+    if (emailSent) {
+      console.log(`[resendTicketsEmail] Email reenviado para orden ${order.order_number} a ${order.customer_email}`);
+      res.json({
+        success: true,
+        message: "Correo enviado exitosamente"
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Error al enviar el correo"
+      });
+    }
+
+  } catch (error) {
+    console.error("Error resending tickets email:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al reenviar el correo"
+    });
+  }
+}
+
+// =====================================================
+// GET: Consulta pública de números por email (sin auth)
+// =====================================================
+export async function consultTicketsByEmail(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "El email es requerido"
+      });
+    }
+
+    console.log(`[consultTicketsByEmail] Consultando números para: ${email}`);
+
+    // Buscar todas las órdenes aprobadas del usuario por email
+    const ordersQuery = await pool.query(
+      `SELECT
+        o.id, o.order_number, o.total, o.status, o.created_at,
+        o.customer_first_name, o.customer_last_name
+      FROM orders o
+      WHERE o.customer_email = $1
+        AND o.status IN ('approved', 'completed')
+      ORDER BY o.created_at DESC`,
+      [email.toLowerCase()]
+    );
+
+    if (ordersQuery.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No se encontraron órdenes aprobadas para este correo"
+      });
+    }
+
+    console.log(`[consultTicketsByEmail] Encontradas ${ordersQuery.rows.length} órdenes`);
+
+    // Para cada orden, obtener sus tickets y el título del sorteo
+    const ordersWithTickets = await Promise.all(
+      ordersQuery.rows.map(async (order) => {
+        // Obtener tickets de la orden
+        const ticketsQuery = await pool.query(
+          `SELECT t.id, t.ticket_number, t.status, t.is_winner, t.raffle_id
+           FROM tickets t
+           JOIN order_items oi ON oi.raffle_id = t.raffle_id
+           WHERE oi.order_id = $1 AND t.status = 'sold'
+           ORDER BY t.ticket_number ASC`,
+          [order.id]
+        );
+
+        // Obtener título del sorteo
+        let raffleTitle = "Sorteo";
+        if (ticketsQuery.rows.length > 0) {
+          const raffleQuery = await pool.query(
+            `SELECT title FROM raffles WHERE id = $1`,
+            [ticketsQuery.rows[0].raffle_id]
+          );
+          if (raffleQuery.rows.length > 0) {
+            raffleTitle = raffleQuery.rows[0].title;
+          }
+        }
+
+        return {
+          orderNumber: order.order_number,
+          raffleTitle,
+          total: parseFloat(order.total),
+          status: order.status,
+          createdAt: order.created_at,
+          customerName: `${order.customer_first_name} ${order.customer_last_name}`,
+          tickets: ticketsQuery.rows.map(t => ({
+            id: t.id,
+            ticketNumber: t.ticket_number,
+            isWinner: t.is_winner,
+            status: t.status
+          }))
+        };
+      })
+    );
+
+    res.json({
+      success: true,
+      data: {
+        email,
+        orders: ordersWithTickets
+      }
+    });
+
+  } catch (error) {
+    console.error("Error consulting tickets:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al consultar números"
     });
   }
 }
