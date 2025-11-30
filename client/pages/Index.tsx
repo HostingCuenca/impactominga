@@ -330,11 +330,11 @@ export default function Index() {
         {/* Banner Image */}
         <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
           <div className="max-w-7xl mx-auto">
-            <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg bg-gray-200 shadow-xl">
+            <div className="relative overflow-hidden rounded-lg bg-gray-200 shadow-xl">
               <img
                 src={raffle.bannerUrl}
                 alt={raffle.title}
-                className="w-full h-full object-cover object-right"
+                className="w-full h-auto object-contain md:object-cover md:h-[500px] md:object-right"
               />
             </div>
           </div>
