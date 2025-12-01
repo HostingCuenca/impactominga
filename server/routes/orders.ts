@@ -302,8 +302,8 @@ async function createOrderForUser(userId: string, data: any) {
     // Paquete personalizado - extraer cantidad del ID
     const customQuantity = parseInt(packageId.replace('custom-', ''));
 
-    if (isNaN(customQuantity) || customQuantity < 4) {
-      throw new Error("Cantidad personalizada inválida (mínimo 4 números)");
+    if (isNaN(customQuantity) || customQuantity < 3) {
+      throw new Error("Cantidad personalizada inválida (mínimo 3 números)");
     }
 
     // Calcular precio: $1 por boleto

@@ -40,7 +40,7 @@ export default function Index() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [email, setEmail] = useState("");
   const [consultEmail, setConsultEmail] = useState("");
-  const [quantity, setQuantity] = useState(4);
+  const [quantity, setQuantity] = useState(3);
   const [consultLoading, setConsultLoading] = useState(false);
   const [consultResults, setConsultResults] = useState<any>(null);
   const [consultError, setConsultError] = useState("");
@@ -353,7 +353,7 @@ export default function Index() {
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {packages.map((pkg, index) => (
+              {[...packages].sort((a, b) => b.quantity - a.quantity).map((pkg, index) => (
                 <div
                   key={pkg.id}
                   className={`rounded-lg overflow-hidden transition transform hover:scale-105 animate-fade-in-up ${
@@ -611,7 +611,7 @@ export default function Index() {
                   {/* Selector visual con botones grandes */}
                   <div className="flex items-center justify-center gap-4 mb-4">
                     <button
-                      onClick={() => setQuantity(Math.max(4, quantity - 1))}
+                      onClick={() => setQuantity(Math.max(3, quantity - 1))}
                       className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-2xl transition shadow-lg hover:shadow-xl"
                       aria-label="Disminuir cantidad"
                     >
@@ -621,9 +621,9 @@ export default function Index() {
                     <div className="bg-white border-4 border-[#d4af37] rounded-lg px-8 py-4 min-w-[120px]">
                       <input
                         type="number"
-                        min="4"
+                        min="3"
                         value={quantity}
-                        onChange={(e) => setQuantity(Math.max(4, parseInt(e.target.value) || 4))}
+                        onChange={(e) => setQuantity(Math.max(3, parseInt(e.target.value) || 3))}
                         className="w-full text-center font-oswald text-4xl font-bold text-black bg-transparent outline-none"
                       />
                       <p className="text-center text-xs text-gray-500 font-raleway mt-1">números</p>
@@ -640,7 +640,7 @@ export default function Index() {
 
                   <div className="bg-[#d4af37] bg-opacity-20 rounded-lg p-4 text-center">
                     <p className="text-sm text-gray-700 font-raleway mb-1">
-                      💡 <strong>Mínimo 4 números</strong> · Cada número = $1 USD
+                      💡 <strong>Mínimo 3 números</strong> · Cada número = $1 USD
                     </p>
                     <p className="font-oswald text-2xl font-bold text-black">
                       Total: ${(quantity * 1).toFixed(2)} USD

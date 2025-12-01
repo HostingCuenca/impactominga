@@ -65,7 +65,7 @@ export default function Checkout() {
         if (packageId && packageId.startsWith('custom-')) {
           // Custom package - create virtual package object
           const customQuantity = parseInt(packageId.replace('custom-', ''));
-          if (!isNaN(customQuantity) && customQuantity >= 4) {
+          if (!isNaN(customQuantity) && customQuantity >= 3) {
             setSelectedPackage({
               id: packageId,
               quantity: customQuantity,
@@ -74,7 +74,7 @@ export default function Checkout() {
               discountPercentage: 0,
             });
           } else {
-            setError("Cantidad personalizada inválida");
+            setError("Cantidad personalizada inválida (mínimo 3 números)");
           }
         } else {
           // Load packages from API
@@ -555,7 +555,8 @@ export default function Checkout() {
                     </div>
                   )}
 
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
+                     Bank Transfer Info
                     <label className="block font-raleway font-semibold text-gray-700 mb-2">
                       Notas adicionales (opcional)
                     </label>
@@ -567,7 +568,8 @@ export default function Checkout() {
                       placeholder="Ej: Ya realicé la transferencia, comprobante enviado por WhatsApp"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
                     />
-                  </div>
+                  </div>*/}
+
                 </div>
 
                 <button

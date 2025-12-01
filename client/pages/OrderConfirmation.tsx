@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { CheckCircle, Package, CreditCard, Upload, AlertCircle } from "lucide-react";
+import { CheckCircle, Package, CreditCard, Upload, AlertCircle, Copy, Check } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -27,6 +27,7 @@ export default function OrderConfirmation() {
   const [order, setOrder] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!orderId) {
@@ -64,6 +65,19 @@ export default function OrderConfirmation() {
       setError("Error de conexión. Intenta nuevamente.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  function getOrderReference(orderNumber: string) {
+    return orderNumber.slice(-4).toUpperCase();
+  }
+
+  function handleCopyReference() {
+    if (order) {
+      const reference = getOrderReference(order.orderNumber);
+      navigator.clipboard.writeText(reference);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   }
 
@@ -126,8 +140,27 @@ export default function OrderConfirmation() {
             <p className="text-gray-600 font-raleway text-lg mb-4">
               Gracias por tu compra, <span className="font-semibold">{order.customerName}</span>
             </p>
-            <div className="inline-block bg-[#d4af37] text-black px-6 py-3 rounded-lg font-oswald text-xl font-bold">
-              ORDEN #{order.orderNumber}
+
+            {/* Referencia de orden */}
+            <div className="space-y-3">
+              <p className="font-raleway text-sm text-gray-600">
+                📝 <strong>Tu referencia de pago:</strong>
+              </p>
+              <div className="inline-flex items-center gap-3 bg-[#d4af37] text-black px-6 py-4 rounded-lg shadow-lg">
+                <span className="font-oswald text-3xl font-bold tracking-wider">
+                  {getOrderReference(order.orderNumber)}
+                </span>
+                <button
+                  onClick={handleCopyReference}
+                  className="bg-black text-white p-2 rounded-lg hover:bg-gray-800 transition"
+                  title="Copiar referencia"
+                >
+                  {copied ? <Check size={20} /> : <Copy size={20} />}
+                </button>
+              </div>
+              <p className="font-raleway text-xs text-gray-500 max-w-md mx-auto">
+                Usa esta referencia de <strong>4 caracteres</strong> como asunto o nota al enviar tu comprobante de pago
+              </p>
             </div>
           </div>
 
@@ -208,9 +241,31 @@ export default function OrderConfirmation() {
                 <span className="font-raleway font-semibold text-gray-700">Titular:</span>
                 <span className="font-raleway text-black">MINGA TIPANLUIZA RICHARD DUFFER</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between border-b border-gray-200 pb-2">
                 <span className="font-raleway font-semibold text-gray-700">C.I:</span>
                 <span className="font-raleway font-mono text-black">1501260440</span>
+              </div>
+
+              {/* Referencia de pago destacada */}
+              <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mt-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-raleway font-bold text-gray-800">⚠️ Referencia/Asunto:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-2xl text-black bg-white px-4 py-2 rounded border-2 border-yellow-400">
+                      {getOrderReference(order.orderNumber)}
+                    </span>
+                    <button
+                      onClick={handleCopyReference}
+                      className="bg-yellow-500 text-black p-2 rounded hover:bg-yellow-600 transition"
+                      title="Copiar referencia"
+                    >
+                      {copied ? <Check size={18} /> : <Copy size={18} />}
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mt-2">
+                  💡 Incluye esta referencia en el asunto o concepto de tu transferencia
+                </p>
               </div>
             </div>
 
@@ -240,8 +295,11 @@ export default function OrderConfirmation() {
                 </span>
                 <div>
                   <h3 className="font-raleway font-bold text-black mb-1">Realiza el pago</h3>
-                  <p className="font-raleway text-gray-600 text-sm">
+                  <p className="font-raleway text-gray-600 text-sm mb-2">
                     Transfiere el monto de <strong>${order.total.toFixed(2)}</strong> a la cuenta bancaria indicada arriba.
+                  </p>
+                  <p className="font-raleway text-gray-600 text-sm">
+                    ⚠️ <strong>Importante:</strong> Incluye la referencia <span className="font-mono font-bold text-black bg-yellow-100 px-2 py-1 rounded">{getOrderReference(order.orderNumber)}</span> en el asunto o concepto de la transferencia.
                   </p>
                 </div>
               </li>

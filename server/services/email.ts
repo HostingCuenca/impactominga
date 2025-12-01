@@ -100,10 +100,13 @@ export async function sendOrderConfirmationEmail(
   raffleTitle: string,
   quantity: number
 ) {
+  // Extraer últimos 4 caracteres para la referencia
+  const orderReference = orderNumber.slice(-4).toUpperCase();
+
   const mailOptions = {
     from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
     to: email,
-    subject: `Orden Confirmada #${orderNumber} - Impacto Minga`,
+    subject: `Orden Confirmada #${orderReference} - Impacto Minga`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -214,6 +217,27 @@ export async function sendOrderConfirmationEmail(
             margin: 20px 0;
             text-align: center;
           }
+          .reference-box {
+            background: #fff9e6;
+            border: 3px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+          }
+          .reference-number {
+            font-family: 'Courier New', monospace;
+            font-size: 36px;
+            font-weight: bold;
+            color: #000000;
+            letter-spacing: 8px;
+            margin: 10px 0;
+            background: white;
+            padding: 15px;
+            border: 2px dashed #d4af37;
+            border-radius: 6px;
+            display: inline-block;
+          }
           .footer {
             background: #000000;
             color: #ffffff;
@@ -251,9 +275,17 @@ export async function sendOrderConfirmationEmail(
             <h2 class="greeting">¡Hola ${firstName}!</h2>
             <p>Tu orden ha sido creada exitosamente. A continuación encontrarás todos los detalles:</p>
 
+            <!-- Referencia de Pago Destacada -->
+            <div class="reference-box">
+              <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: 600;">📝 <strong>TU REFERENCIA DE PAGO</strong></p>
+              <div class="reference-number">${orderReference}</div>
+              <p style="margin: 10px 0 0 0; font-size: 13px; color: #666;">
+                ⚠️ Incluye esta referencia como <strong>asunto o concepto</strong> en tu transferencia
+              </p>
+            </div>
+
             <!-- Detalles de la Orden -->
             <div class="order-box">
-              <p><strong>Número de Orden:</strong> ${orderNumber}</p>
               <p><strong>Sorteo:</strong> ${raffleTitle}</p>
               <p><strong>Cantidad de Boletos:</strong> ${quantity}</p>
               <p><strong>Total a Pagar:</strong> <span class="total-amount">$${total.toFixed(2)} USD</span></p>
@@ -271,7 +303,9 @@ export async function sendOrderConfirmationEmail(
                   <p><strong>Titular:</strong> MINGA TIPANLUIZA RICHARD DUFFER</p>
                   <p><strong>C.I:</strong> 1501260440</p>
                   <p><strong>Monto:</strong> <span class="total-amount">$${total.toFixed(2)}</span></p>
-                  <p><strong>Referencia:</strong> ${orderNumber}</p>
+                  <p style="background: #fff9e6; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                    <strong>⚠️ Referencia/Asunto:</strong> <span style="font-family: monospace; font-size: 18px; font-weight: bold; color: #000;">${orderReference}</span>
+                  </p>
                 </div>
               </li>
               <li><strong>Envía tu comprobante por WhatsApp</strong> para verificación rápida y segura</li>
@@ -280,7 +314,7 @@ export async function sendOrderConfirmationEmail(
 
             <!-- Botón WhatsApp -->
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://wa.me/593980212915?text=Hola%2C%20realicé%20una%20transferencia%20para%20la%20orden%20${orderNumber}%20por%20%24${total.toFixed(2)}%20y%20adjunto%20el%20comprobante." class="whatsapp-button">
+              <a href="https://wa.me/593980212915?text=Hola%2C%20realicé%20una%20transferencia%20con%20referencia%20${orderReference}%20por%20%24${total.toFixed(2)}%20y%20adjunto%20el%20comprobante." class="whatsapp-button">
                 📱 ENVIAR COMPROBANTE POR WHATSAPP
               </a>
             </div>
