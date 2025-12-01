@@ -141,14 +141,13 @@ export default function Checkout() {
     // Restricciones por campo
     let newValue = value;
 
-    // Solo números para teléfono y número de ID (cuando es cédula)
-    if (name === 'phone' || (name === 'idNumber' && formData.idType === 'cedula')) {
+    // Solo números para teléfono, cédula y RUC (pasaporte permite alfanumérico)
+    if (name === 'phone' || (name === 'idNumber' && (formData.idType === 'cedula' || formData.idType === 'ruc'))) {
       newValue = value.replace(/[^0-9]/g, '');
     }
 
-    // Solo texto (sin números) para nombres, apellidos, direcciones y provincias
-    if (name === 'firstName' || name === 'lastName' || name === 'shippingAddress' ||
-        name === 'shippingCity' || name === 'shippingProvince') {
+    // Solo letras y espacios para nombres y apellidos (sin números ni caracteres especiales)
+    if (name === 'firstName' || name === 'lastName') {
       newValue = value.replace(/[0-9]/g, '');
     }
 
@@ -159,12 +158,18 @@ export default function Checkout() {
     e.preventDefault();
     setError("");
 
-    // Validar cédula ecuatoriana si el tipo de ID es cédula
-    if (formData.idType === 'cedula') {
+    // Validar cédula ecuatoriana si el tipo de ID es cédula Y tiene 10 dígitos
+    if (formData.idType === 'cedula' && formData.idNumber.length === 10) {
       if (!validateEcuadorianCedula(formData.idNumber)) {
         setError("La cédula ingresada no es válida. Por favor verifica el número.");
         return;
       }
+    }
+
+    // Validar longitud de cédula si es el tipo seleccionado
+    if (formData.idType === 'cedula' && formData.idNumber.length !== 10) {
+      setError("La cédula debe tener exactamente 10 dígitos.");
+      return;
     }
 
     // Validar que el teléfono tenga al menos 7 dígitos
@@ -511,13 +516,26 @@ export default function Checkout() {
                         value={formData.idNumber}
                         onChange={handleInputChange}
                         required
-                        maxLength={formData.idType === 'cedula' ? 10 : undefined}
-                        placeholder={formData.idType === 'cedula' ? '10 dígitos' : ''}
+                        maxLength={
+                          formData.idType === 'cedula' ? 10 :
+                          formData.idType === 'ruc' ? 13 :
+                          undefined
+                        }
+                        placeholder={
+                          formData.idType === 'cedula' ? '10 dígitos' :
+                          formData.idType === 'ruc' ? '13 dígitos' :
+                          'Ingresa tu número de pasaporte'
+                        }
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
                       />
                       {formData.idType === 'cedula' && (
                         <p className="text-xs text-gray-500 mt-1 font-raleway">
                           ✓ La cédula será validada
+                        </p>
+                      )}
+                      {formData.idType === 'ruc' && (
+                        <p className="text-xs text-gray-500 mt-1 font-raleway">
+                          ✓ Ingresa tu RUC de 13 dígitos
                         </p>
                       )}
                     </div>
