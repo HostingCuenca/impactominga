@@ -105,14 +105,74 @@ export default function Checkout() {
     }
   }, [user]);
 
+  // Validación de cédula ecuatoriana con algoritmo módulo 10
+  const validateEcuadorianCedula = (cedula: string): boolean => {
+    // Debe tener 10 dígitos
+    if (cedula.length !== 10) return false;
+
+    // Los dos primeros dígitos deben estar entre 01 y 24 (provincias)
+    const provincia = parseInt(cedula.substring(0, 2));
+    if (provincia < 1 || provincia > 24) return false;
+
+    // El tercer dígito debe ser menor a 6 (personas naturales)
+    const tercerDigito = parseInt(cedula.charAt(2));
+    if (tercerDigito > 5) return false;
+
+    // Algoritmo módulo 10 para validar dígito verificador
+    const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+    const digitoVerificador = parseInt(cedula.charAt(9));
+    let suma = 0;
+
+    for (let i = 0; i < 9; i++) {
+      let valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+      if (valor >= 10) valor -= 9;
+      suma += valor;
+    }
+
+    const resultado = suma % 10;
+    const verificador = resultado === 0 ? 0 : 10 - resultado;
+
+    return verificador === digitoVerificador;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Restricciones por campo
+    let newValue = value;
+
+    // Solo números para teléfono y número de ID (cuando es cédula)
+    if (name === 'phone' || (name === 'idNumber' && formData.idType === 'cedula')) {
+      newValue = value.replace(/[^0-9]/g, '');
+    }
+
+    // Solo texto (sin números) para nombres, apellidos, direcciones y provincias
+    if (name === 'firstName' || name === 'lastName' || name === 'shippingAddress' ||
+        name === 'shippingCity' || name === 'shippingProvince') {
+      newValue = value.replace(/[0-9]/g, '');
+    }
+
+    setFormData(prev => ({ ...prev, [name]: newValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Validar cédula ecuatoriana si el tipo de ID es cédula
+    if (formData.idType === 'cedula') {
+      if (!validateEcuadorianCedula(formData.idNumber)) {
+        setError("La cédula ingresada no es válida. Por favor verifica el número.");
+        return;
+      }
+    }
+
+    // Validar que el teléfono tenga al menos 7 dígitos
+    if (formData.phone.length < 7) {
+      setError("El teléfono debe tener al menos 7 dígitos.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -332,14 +392,29 @@ export default function Checkout() {
 
                 {/* Personal Info */}
                 <div className="bg-white rounded-lg p-8">
-                  <h2 className="font-oswald text-2xl font-bold text-black mb-6">
+                  <h2 className="font-oswald text-2xl font-bold text-black mb-4">
                     INFORMACIÓN PERSONAL
                   </h2>
+
+                  {/* Nota sobre información verdadera */}
+                  <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="text-amber-600 mt-0.5 flex-shrink-0" size={20} />
+                      <div>
+                        <p className="font-raleway text-sm text-amber-900 font-semibold mb-1">
+                          Información Importante
+                        </p>
+                        <p className="font-raleway text-sm text-amber-800">
+                          Todos los datos proporcionados deben ser <strong>verídicos y exactos</strong>. Esta información será utilizada para la identificación del ganador y la entrega del premio en caso de resultar favorecido.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block font-raleway font-semibold text-gray-700 mb-2">
-                        Nombre *
+                        Nombres *
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -356,7 +431,7 @@ export default function Checkout() {
 
                     <div>
                       <label className="block font-raleway font-semibold text-gray-700 mb-2">
-                        Apellido *
+                        Apellidos *
                       </label>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -436,8 +511,15 @@ export default function Checkout() {
                         value={formData.idNumber}
                         onChange={handleInputChange}
                         required
+                        maxLength={formData.idType === 'cedula' ? 10 : undefined}
+                        placeholder={formData.idType === 'cedula' ? '10 dígitos' : ''}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
                       />
+                      {formData.idType === 'cedula' && (
+                        <p className="text-xs text-gray-500 mt-1 font-raleway">
+                          ✓ La cédula será validada
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -546,10 +628,10 @@ export default function Checkout() {
                       </div>
                       <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">
                         <p className="text-xs text-yellow-800 font-raleway mb-2">
-                          <strong>📱 Importante:</strong> Después de realizar la transferencia, envía el comprobante por WhatsApp al <strong>+593 98 021 2915</strong> para corroborar la información y mayor seguridad.
+                          <strong>Importante:</strong> Después de realizar la transferencia, envía el comprobante por WhatsApp al <strong>+593 98 021 2915</strong> para corroborar la información y mayor seguridad.
                         </p>
                         <p className="text-xs text-yellow-700 font-raleway">
-                          ℹ️ <strong>Nota:</strong> Los tickets de rifa NO gravan IVA (IVA 0%). Los valores mostrados son finales.
+                           <strong>Nota:</strong> Los tickets de rifa NO gravan IVA (IVA 0%). Los valores mostrados son finales.
                         </p>
                       </div>
                     </div>
