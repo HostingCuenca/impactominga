@@ -45,6 +45,8 @@ export default function Checkout() {
     customerNotes: "",
   });
 
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+
   // Load raffle and package data
   useEffect(() => {
     if (!raffleId || !packageId) {
@@ -157,6 +159,12 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Validar que se aceptaron los términos y condiciones
+    if (!acceptedTerms) {
+      setError("Debes aceptar los términos y condiciones para continuar con la compra.");
+      return;
+    }
 
     // Validar cédula ecuatoriana si el tipo de ID es cédula Y tiene 10 dígitos
     if (formData.idType === 'cedula' && formData.idNumber.length === 10) {
@@ -402,7 +410,7 @@ export default function Checkout() {
                   </h2>
 
                   {/* Nota sobre información verdadera */}
-                  <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
+                  <div className="bg-amber-50 border-amber-500 p-4 mb-6">
                     <div className="flex items-start gap-3">
                       <AlertCircle className="text-amber-600 mt-0.5 flex-shrink-0" size={20} />
                       <div>
@@ -613,7 +621,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Bank Transfer Info */}
-                  {formData.paymentMethod === 'bank_transfer' && (
+                  {/* {formData.paymentMethod === 'bank_transfer' && (
                     <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
                       <h3 className="font-oswald text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -653,7 +661,8 @@ export default function Checkout() {
                         </p>
                       </div>
                     </div>
-                  )}
+                  )} */}
+
 
                   {/* <div className="mt-4">
                      Bank Transfer Info
@@ -702,9 +711,58 @@ export default function Checkout() {
                   </div>
                 </div>
 
+                {/* Disclaimer - Advertencia */}
+                <div className="bg-red-50 border-red-500 p-6 rounded-lg">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="text-red-600 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <h3 className="font-oswald text-lg font-bold text-red-900 mb-2">
+                        ADVERTENCIA IMPORTANTE
+                      </h3>
+                      <p className="font-raleway text-sm text-red-800 mb-2">
+                        Al continuar con esta compra, confirmas que:
+                      </p>
+                      <ul className="font-raleway text-sm text-red-800 space-y-1 ml-4 list-disc">
+                        <li>Estás completamente seguro de realizar esta compra</li>
+                        <li>Toda la información proporcionada es verídica y exacta</li>
+                        <li>Entiendes que esta es una compra de boletos de rifa</li>
+                        <li>No habrá devoluciones una vez confirmada la orden</li>
+                      </ul>
+                      <p className="font-raleway text-sm text-red-900 font-bold mt-3">
+                        Si tienes alguna duda, NO continúes y contáctanos primero por WhatsApp.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Términos y Condiciones Checkbox */}
+                <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="mt-1 w-5 h-5 text-black border-gray-300 rounded focus:ring-2 focus:ring-[#d4af37] cursor-pointer"
+                      required
+                    />
+                    <span className="font-raleway text-sm text-gray-700">
+                      He leído y estoy de acuerdo con los{" "}
+                      <a
+                        href="/terms-and-conditions"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#d4af37] font-bold hover:underline"
+                      >
+                        Términos y Condiciones
+                      </a>{" "}
+                      de la web. Confirmo que toda la información proporcionada es verídica y acepto las políticas de la empresa. <span className="text-red-600 font-bold">*</span>
+                    </span>
+                  </label>
+                </div>
+
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !acceptedTerms}
                   className="w-full bg-black text-white py-4 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {loading ? "PROCESANDO..." : "CONTINUAR CON LA COMPRA"}
