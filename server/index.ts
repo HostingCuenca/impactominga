@@ -14,6 +14,7 @@ import { getRevealedPrizes, getMyPrizes } from "./routes/prizes";
 import { getUsers, getUserById, updateUser, updateUserStatus, updateUserRole, deleteUser, getUserStats } from "./routes/users";
 import { getSettings, updateSetting, createSetting, deleteSetting } from "./routes/settings";
 import { getDashboardStats, getRecentActivity, getSalesChart } from "./routes/dashboard";
+import { debugGenerateTickets, debugGetTicketCount, debugDeleteTickets, debugUpdateTotalTickets } from "./routes/debug-tickets";
 
 export function createServer() {
   const app = express();
@@ -34,6 +35,12 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
   app.get("/api/db/test", handleDbTest);
+
+  // DEBUG ENDPOINTS (SIN AUTENTICACIÓN - SOLO DESARROLLO)
+  app.get("/api/debug/generate-tickets/:raffleId", debugGenerateTickets);
+  app.get("/api/debug/ticket-count/:raffleId", debugGetTicketCount);
+  app.post("/api/debug/update-total-tickets/:raffleId", debugUpdateTotalTickets);
+  app.delete("/api/debug/delete-tickets/:raffleId", debugDeleteTickets);
 
   // Auth routes
   app.post("/api/auth/register", handleRegister);

@@ -51,8 +51,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    const { status, raffleId, search, limit = "100", offset = "0" } = req.query;
+    const { status, raffleId, search, limit = "100", offset = "0", countOnly } = req.query;
 
+    // Si solo se requiere el conteo, hacer una consulta optimizada
+    if (countOnly === "true") {
+      let countQuery = `
+        SELECT COUNT(*) as count
+        FROM tickets t
+        WHERE 1=1
+      `;
+
+      const params: any[] = [];
+      let paramIndex = 1;
+
+      if (status && status !== "all") {
+        countQuery += ` AND t.status = $${paramIndex}`;
+        params.push(status);
+        paramIndex++;
+      }
+
+      if (raffleId && raffleId !== "all") {
+        countQuery += ` AND t.raffle_id = $${paramIndex}`;
+        params.push(raffleId);
+        paramIndex++;
+      }
+
+      const result = await db.query(countQuery, params);
+      const count = parseInt(result.rows[0].count);
+
+      return res.json({
+        success: true,
+        count: count
+      });
+    }
+
+    // Consulta normal con todos los datos
     let query = `
       SELECT
         t.id,

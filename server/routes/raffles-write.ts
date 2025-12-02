@@ -1227,6 +1227,14 @@ export async function generateTickets(req: Request, res: Response) {
     const raffle = raffleQuery.rows[0];
     const totalTickets = raffle.total_tickets;
 
+    console.log(`[generateTickets] Raffle data:`, {
+      id: raffle.id,
+      title: raffle.title,
+      total_tickets: raffle.total_tickets,
+      totalTickets: totalTickets,
+      type: typeof totalTickets
+    });
+
     // Check if tickets already exist
     const existingTicketsQuery = await pool.query(
       "SELECT COUNT(*) as count FROM tickets WHERE raffle_id = $1",
@@ -1243,12 +1251,15 @@ export async function generateTickets(req: Request, res: Response) {
     }
 
     console.log(`[generateTickets] Creating ${totalTickets} tickets for raffle ${id} (${raffle.title})`);
+    console.log(`[generateTickets] Loop will run from 0 to ${totalTickets}`);
 
     // Create tickets
     const ticketValues = [];
     for (let i = 0; i < totalTickets; i++) {
       ticketValues.push(`('${id}', ${i}, 'available')`);
     }
+
+    console.log(`[generateTickets] Generated ${ticketValues.length} ticket values`);
 
     // Insert in batches of 1000
     const batchSize = 1000;

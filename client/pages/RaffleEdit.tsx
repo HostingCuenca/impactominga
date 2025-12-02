@@ -166,7 +166,7 @@ export default function RaffleEdit() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response = await fetch(`/api/tickets?raffleId=${id}`, {
+      const response = await fetch(`/api/tickets?raffleId=${id}&countOnly=true`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -174,7 +174,7 @@ export default function RaffleEdit() {
 
       const data = await response.json();
       if (data.success) {
-        setTicketsCount(data.data.length);
+        setTicketsCount(data.count);
       }
     } catch (err) {
       console.error("Error cargando cantidad de tickets:", err);

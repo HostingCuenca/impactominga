@@ -24,6 +24,9 @@ export default function TicketsList() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterRaffle, setFilterRaffle] = useState("all");
   const [raffles, setRaffles] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(100);
+  const [totalTickets, setTotalTickets] = useState(0);
 
   useEffect(() => {
     fetchRaffles();
@@ -44,12 +47,17 @@ export default function TicketsList() {
 
   async function fetchTickets() {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const params = new URLSearchParams();
 
       if (filterStatus !== "all") params.append("status", filterStatus);
       if (filterRaffle !== "all") params.append("raffleId", filterRaffle);
       if (searchTerm) params.append("search", searchTerm);
+
+      // Paginación
+      params.append("limit", itemsPerPage.toString());
+      params.append("offset", ((currentPage - 1) * itemsPerPage).toString());
 
       const response = await fetch(`/api/tickets?${params.toString()}`, {
         headers: {
@@ -61,6 +69,8 @@ export default function TicketsList() {
 
       if (data.success) {
         setTickets(data.data);
+        // Siempre obtener el total
+        await fetchTotalCount();
       }
     } catch (error) {
       console.error("Error fetching tickets:", error);
@@ -69,9 +79,37 @@ export default function TicketsList() {
     }
   }
 
+  async function fetchTotalCount() {
+    try {
+      const token = localStorage.getItem("token");
+      const params = new URLSearchParams();
+      params.append("countOnly", "true");
+
+      if (filterStatus !== "all") params.append("status", filterStatus);
+      if (filterRaffle !== "all") params.append("raffleId", filterRaffle);
+
+      const response = await fetch(`/api/tickets?${params.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (data.success && data.count !== undefined) {
+        setTotalTickets(data.count);
+      }
+    } catch (error) {
+      console.error("Error fetching total count:", error);
+    }
+  }
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset page when filters change
+  }, [filterStatus, filterRaffle, searchTerm]);
+
   useEffect(() => {
     fetchTickets();
-  }, [filterStatus, filterRaffle]);
+  }, [filterStatus, filterRaffle, currentPage, itemsPerPage]);
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { className: string; text: string }> = {
@@ -90,15 +128,23 @@ export default function TicketsList() {
     );
   };
 
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesSearch =
-      searchTerm === "" ||
-      ticket.ticketNumber.toString().includes(searchTerm) ||
-      ticket.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ticket.userName?.toLowerCase().includes(searchTerm.toLowerCase());
+  const totalPages = Math.ceil(totalTickets / itemsPerPage);
+  const [pageInput, setPageInput] = useState("");
 
-    return matchesSearch;
-  });
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchTickets();
+  };
+
+  const goToPage = () => {
+    const page = parseInt(pageInput);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      setPageInput("");
+    } else {
+      alert(`Por favor ingresa un número entre 1 y ${totalPages}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -125,7 +171,7 @@ export default function TicketsList() {
                   GESTIÓN DE TICKETS
                 </h1>
                 <p className="text-gray-600 font-raleway">
-                  {filteredTickets.length} tickets encontrados
+                  {totalTickets > 0 ? `${totalTickets.toLocaleString()} tickets totales` : `${tickets.length} tickets encontrados`}
                 </p>
               </div>
               <button className="flex items-center gap-2 px-6 py-3 bg-[#d4af37] text-black rounded-lg font-oswald font-bold hover:bg-[#b8941f] transition">
@@ -143,13 +189,22 @@ export default function TicketsList() {
                   <Search className="w-4 h-4 inline mr-1" />
                   Buscar
                 </label>
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Número, orden, cliente..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                    placeholder="Número, orden, cliente..."
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
+                  />
+                  <button
+                    onClick={handleSearch}
+                    className="px-4 py-2 bg-[#d4af37] text-black rounded-lg font-raleway font-semibold hover:bg-[#b8941f] transition"
+                  >
+                    Buscar
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -216,7 +271,7 @@ export default function TicketsList() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredTickets.length === 0 ? (
+                  {tickets.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="px-6 py-12 text-center">
                         <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -226,7 +281,7 @@ export default function TicketsList() {
                       </td>
                     </tr>
                   ) : (
-                    filteredTickets.map((ticket) => (
+                    tickets.map((ticket) => (
                       <tr key={ticket.id} className="hover:bg-gray-50 transition">
                         <td className="px-6 py-4">
                           <span className="font-oswald text-lg font-bold text-[#d4af37]">
@@ -272,6 +327,87 @@ export default function TicketsList() {
                 </tbody>
               </table>
             </div>
+
+            {/* Paginación */}
+            {totalTickets > 0 && (
+              <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-gray-700 font-raleway">
+                    Mostrando {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, totalTickets)} de {totalTickets.toLocaleString()} tickets
+                  </span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="px-3 py-1 border border-gray-300 rounded font-raleway text-sm"
+                  >
+                    <option value="50">50 por página</option>
+                    <option value="100">100 por página</option>
+                    <option value="200">200 por página</option>
+                    <option value="500">500 por página</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border border-gray-300 rounded font-raleway text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Primera
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border border-gray-300 rounded font-raleway text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Anterior
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600 font-raleway">
+                      Página {currentPage} de {totalPages}
+                    </span>
+                    <div className="flex items-center gap-1 ml-2">
+                      <span className="text-xs text-gray-500 font-raleway">Ir a:</span>
+                      <input
+                        type="number"
+                        value={pageInput}
+                        onChange={(e) => setPageInput(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && goToPage()}
+                        placeholder="#"
+                        min="1"
+                        max={totalPages}
+                        className="w-16 px-2 py-1 border border-gray-300 rounded text-sm font-raleway"
+                      />
+                      <button
+                        onClick={goToPage}
+                        className="px-2 py-1 bg-[#d4af37] text-black rounded text-xs font-raleway font-semibold hover:bg-[#b8941f] transition"
+                      >
+                        Ir
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border border-gray-300 rounded font-raleway text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Siguiente
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 border border-gray-300 rounded font-raleway text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Última
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
