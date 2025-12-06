@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import useScrollTop from "@/hooks/useScrollTop";
 import { useCart } from "@/context/CartContext";
@@ -48,6 +48,7 @@ export default function Index() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [prizes, setPrizes] = useState<Prize[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -582,14 +583,12 @@ export default function Index() {
             </div>
 
             <div className="text-center mb-12">
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setShowVideoModal(true)}
                 className="inline-block bg-black text-white px-8 py-3 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition"
               >
                 VER VIDEO TUTORIAL DE COMPRA
-              </a>
+              </button>
             </div>
 
             {/* Additional Purchase Form */}
@@ -1172,6 +1171,54 @@ export default function Index() {
           </div>
         </section> */}
       </main>
+
+      {/* Video Tutorial Modal - Vertical Short */}
+      {showVideoModal && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setShowVideoModal(false)}
+        >
+          <div
+            className="relative w-full max-w-md bg-black rounded-lg overflow-hidden shadow-2xl animate-fade-in-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowVideoModal(false)}
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition"
+              aria-label="Cerrar video"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Video Title */}
+            <div className="bg-gradient-to-r from-[#d4af37] to-[#f0d98f] px-6 py-3">
+              <h3 className="font-oswald text-lg font-bold text-black text-center">
+                TUTORIAL DE COMPRA
+              </h3>
+            </div>
+
+            {/* YouTube Embed - Vertical (9:16 aspect ratio) */}
+            <div className="relative bg-black" style={{ paddingBottom: '177.78%', height: 0 }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/74PDAoSzwGk"
+                title="Tutorial de Compra - Impacto Minga"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+
+            {/* Footer Instructions */}
+            <div className="bg-gradient-to-r from-[#d4af37] to-[#f0d98f] px-6 py-3">
+              <p className="text-center text-black font-raleway text-sm font-semibold">
+                📱 Sigue estos pasos para completar tu compra
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
