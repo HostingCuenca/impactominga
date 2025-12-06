@@ -94,7 +94,7 @@ export function createServer() {
   // Orders routes (GET - admin/contadora and customers can see their own)
   app.get("/api/orders/my-orders", verifyToken, getMyOrders);
   app.get("/api/orders", verifyToken, getOrders);
-  app.get("/api/orders/:id", verifyToken, getOrderById);
+  app.get("/api/orders/:id", getOrderById); // Público - permite ver confirmación de orden sin login
 
   // Consulta pública de tickets por email (sin auth)
   app.post("/api/orders/consult-tickets", consultTicketsByEmail);

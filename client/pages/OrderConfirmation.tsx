@@ -42,16 +42,14 @@ export default function OrderConfirmation() {
   async function fetchOrderDetails() {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        setError("Debes iniciar sesión para ver esta orden");
-        setLoading(false);
-        return;
+
+      const headers: any = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
       }
 
       const response = await fetch(`/api/orders/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
       });
 
       const data = await response.json();
