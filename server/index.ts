@@ -7,6 +7,7 @@ import { handleRegister, handleLogin, handleGetProfile, verifyToken } from "./ro
 import { getRaffles, getRaffleById, getRafflePackages, getRafflePrizes } from "./routes/raffles";
 import { createRaffle, createPackages, createPrizes, updateRaffle, updateRaffleStatus, deleteRaffle, updatePackage, deletePackage, updatePrize, deletePrize, generateTickets, assignWinnersToPrizes } from "./routes/raffles-write";
 import { smartCheckout, completeCheckoutWithPassword, completeCheckoutWithLogin, getOrders, getOrderById, updateOrderStatus, updateOrder, deleteOrder, uploadReceipt, uploadReceiptMiddleware, getMyOrders, consultTicketsByEmail, resendTicketsEmail } from "./routes/orders";
+import { createManualOrder } from "./routes/admin-orders";
 import { requestPasswordReset, resetPassword } from "./routes/password-reset";
 import { requireAdmin } from "./middleware/requireAdmin";
 import { getTickets } from "./routes/tickets";
@@ -109,6 +110,9 @@ export function createServer() {
   app.patch("/api/orders/:id/status", verifyToken, requireAdmin, updateOrderStatus);
   app.put("/api/orders/:id", verifyToken, requireAdmin, updateOrder);
   app.delete("/api/orders/:id", verifyToken, requireAdmin, deleteOrder);
+
+  // Admin: Crear orden manual (para ventas en local/efectivo)
+  app.post("/api/admin/orders/manual", verifyToken, requireAdmin, createManualOrder);
 
   // Tickets routes (GET - admin/contadora)
   app.get("/api/tickets", verifyToken, requireAdmin, getTickets);

@@ -10,6 +10,12 @@ import {
   Eye,
   ChevronLeft,
   ChevronRight,
+  Plus,
+  X,
+  User,
+  Mail,
+  Phone,
+  CreditCard,
 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 
@@ -49,6 +55,26 @@ export default function OrdersList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalOrders, setTotalOrders] = useState(0);
+
+  // Modal de orden manual
+  const [showManualOrderModal, setShowManualOrderModal] = useState(false);
+  const [raffles, setRaffles] = useState<any[]>([]);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState("");
+  const [modalSuccess, setModalSuccess] = useState("");
+  const [formData, setFormData] = useState({
+    raffleId: "",
+    quantity: 3,
+    email: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    idType: "cedula",
+    idNumber: "",
+    paymentMethod: "cash",
+    paymentReference: "",
+    adminNotes: "",
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -100,6 +126,91 @@ export default function OrdersList() {
     e.preventDefault();
     setCurrentPage(1);
     fetchOrders();
+  }
+
+  async function loadRaffles() {
+    try {
+      const response = await fetch("/api/raffles");
+      const data = await response.json();
+      if (data.success) {
+        setRaffles(data.data.filter((r: any) => r.status === "active"));
+      }
+    } catch (err) {
+      console.error("Error cargando sorteos:", err);
+    }
+  }
+
+  function handleOpenModal() {
+    setShowManualOrderModal(true);
+    setModalError("");
+    setModalSuccess("");
+    loadRaffles();
+  }
+
+  function handleCloseModal() {
+    setShowManualOrderModal(false);
+    setFormData({
+      raffleId: "",
+      quantity: 3,
+      email: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      idType: "cedula",
+      idNumber: "",
+      paymentMethod: "cash",
+      paymentReference: "",
+      adminNotes: "",
+    });
+  }
+
+  async function handleCreateManualOrder(e: React.FormEvent) {
+    e.preventDefault();
+    setModalLoading(true);
+    setModalError("");
+    setModalSuccess("");
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/admin/orders/manual", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          raffleId: formData.raffleId,
+          quantity: formData.quantity,
+          customerData: {
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+            idType: formData.idType,
+            idNumber: formData.idNumber,
+          },
+          paymentMethod: formData.paymentMethod,
+          paymentReference: formData.paymentReference,
+          adminNotes: formData.adminNotes,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setModalSuccess(`✅ Orden ${data.data.orderNumber} creada exitosamente. Ahora apruébala para asignar los números.`);
+        setTimeout(() => {
+          handleCloseModal();
+          fetchOrders(); // Recargar lista de órdenes
+        }, 2000);
+      } else {
+        setModalError(data.message || "Error al crear la orden");
+      }
+    } catch (err) {
+      setModalError("Error de conexión. Intenta nuevamente.");
+    } finally {
+      setModalLoading(false);
+    }
   }
 
   function getStatusBadge(status: string) {
@@ -156,13 +267,22 @@ export default function OrdersList() {
     <DashboardLayout>
       <div className="p-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="font-oswald text-4xl font-bold text-black mb-2">
-            GESTIÓN DE ÓRDENES
-          </h1>
-          <p className="text-gray-600 font-raleway">
-            Administra todas las órdenes de compra y aprueba pagos.
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="font-oswald text-4xl font-bold text-black mb-2">
+              GESTIÓN DE ÓRDENES
+            </h1>
+            <p className="text-gray-600 font-raleway">
+              Administra todas las órdenes de compra y aprueba pagos.
+            </p>
+          </div>
+          <button
+            onClick={handleOpenModal}
+            className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-oswald font-bold hover:bg-green-700 transition shadow-lg"
+          >
+            <Plus className="w-5 h-5" />
+            CREAR ORDEN MANUAL
+          </button>
         </div>
 
         {/* Filters and Search */}
@@ -408,6 +528,273 @@ export default function OrdersList() {
               </div>
             )}
           </>
+        )}
+
+        {/* Modal: Crear Orden Manual */}
+        {showManualOrderModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-oswald text-3xl font-bold text-black">
+                  CREAR ORDEN MANUAL
+                </h2>
+                <button
+                  onClick={handleCloseModal}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <p className="text-gray-600 font-raleway mb-6">
+                Crea una orden para un cliente que pagó en efectivo o en el local.
+              </p>
+
+              {modalError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 font-raleway text-sm">
+                  {modalError}
+                </div>
+              )}
+
+              {modalSuccess && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4 font-raleway text-sm">
+                  {modalSuccess}
+                </div>
+              )}
+
+              <form onSubmit={handleCreateManualOrder} className="space-y-6">
+                {/* Sorteo */}
+                <div>
+                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                    Sorteo *
+                  </label>
+                  <select
+                    value={formData.raffleId}
+                    onChange={(e) =>
+                      setFormData({ ...formData, raffleId: e.target.value })
+                    }
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  >
+                    <option value="">Selecciona un sorteo</option>
+                    {raffles.map((raffle) => (
+                      <option key={raffle.id} value={raffle.id}>
+                        {raffle.title} - Actividad #{raffle.activityNumber}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Cantidad */}
+                <div>
+                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                    Cantidad de Números *
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.quantity}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        quantity: parseInt(e.target.value) || 1,
+                      })
+                    }
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                  <p className="text-sm text-gray-600 mt-1">
+                    Total: ${(formData.quantity * 1).toFixed(2)} USD
+                  </p>
+                </div>
+
+                {/* Datos del Cliente */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-oswald text-lg font-bold text-black mb-4">
+                    DATOS DEL CLIENTE
+                  </h3>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Nombres *
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                          type="text"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            setFormData({ ...formData, firstName: e.target.value })
+                          }
+                          required
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Apellidos *
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                          type="text"
+                          value={formData.lastName}
+                          onChange={(e) =>
+                            setFormData({ ...formData, lastName: e.target.value })
+                          }
+                          required
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Email *
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
+                          required
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Teléfono
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Tipo de ID *
+                      </label>
+                      <select
+                        value={formData.idType}
+                        onChange={(e) =>
+                          setFormData({ ...formData, idType: e.target.value })
+                        }
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      >
+                        <option value="cedula">Cédula</option>
+                        <option value="ruc">RUC</option>
+                        <option value="passport">Pasaporte</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                        Número de ID *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.idNumber}
+                        onChange={(e) =>
+                          setFormData({ ...formData, idNumber: e.target.value })
+                        }
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pago */}
+                <div>
+                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                    Método de Pago
+                  </label>
+                  <div className="relative">
+                    <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <select
+                      value={formData.paymentMethod}
+                      onChange={(e) =>
+                        setFormData({ ...formData, paymentMethod: e.target.value })
+                      }
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="cash">Efectivo</option>
+                      <option value="bank_transfer">Transferencia</option>
+                      <option value="credit_card">Tarjeta de Crédito</option>
+                      <option value="debit_card">Tarjeta de Débito</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Referencia de pago */}
+                <div>
+                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                    Referencia de Pago
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.paymentReference}
+                    onChange={(e) =>
+                      setFormData({ ...formData, paymentReference: e.target.value })
+                    }
+                    placeholder="Ej: Efectivo recibido en local, Transferencia Ref #123"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                {/* Notas */}
+                <div>
+                  <label className="block font-raleway font-semibold text-gray-700 mb-2">
+                    Notas Administrativas
+                  </label>
+                  <textarea
+                    value={formData.adminNotes}
+                    onChange={(e) =>
+                      setFormData({ ...formData, adminNotes: e.target.value })
+                    }
+                    rows={3}
+                    placeholder="Ej: Cliente vino al local, pagó en efectivo..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                {/* Botones */}
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    disabled={modalLoading}
+                    className="flex-1 bg-green-600 text-white py-4 font-oswald font-bold text-lg rounded-lg hover:bg-green-700 transition disabled:bg-gray-400"
+                  >
+                    {modalLoading ? "CREANDO..." : "CREAR ORDEN"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="px-6 bg-gray-300 text-black py-4 font-oswald font-bold rounded-lg hover:bg-gray-400 transition"
+                  >
+                    CANCELAR
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
       </div>
     </DashboardLayout>
