@@ -44,9 +44,51 @@ export default function MyOrders() {
     fetchOrders();
   }, []);
 
+  // Helper: Auto-login con contraseña hardcodeada si no hay token
+  async function ensureToken(): Promise<string | null> {
+    let token = localStorage.getItem("token");
+
+    if (!token) {
+      console.log("[MyOrders] No token found, attempting auto-login...");
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const email = userData.email;
+
+          // Auto-login con contraseña hardcodeada
+          const loginResponse = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: email,
+              password: "impactopassword"
+            })
+          });
+
+          const loginData = await loginResponse.json();
+
+          if (loginData.success && loginData.data.token) {
+            token = loginData.data.token;
+            localStorage.setItem("token", token);
+            console.log("[MyOrders] Auto-login successful");
+            return token;
+          }
+        } catch (err) {
+          console.error("[MyOrders] Auto-login failed:", err);
+        }
+      }
+      return null;
+    }
+
+    return token;
+  }
+
   async function fetchOrders() {
     try {
-      const token = localStorage.getItem("token");
+      const token = await ensureToken();
+
       if (!token) {
         setError("Debes iniciar sesión para ver tus compras");
         setLoading(false);
@@ -99,10 +141,17 @@ export default function MyOrders() {
     setUploadError(null);
 
     try {
+      const token = await ensureToken();
+
+      if (!token) {
+        setUploadError("Debes iniciar sesión para subir el comprobante");
+        setUploadingReceipt(null);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("receipt", file);
 
-      const token = localStorage.getItem("token");
       const response = await fetch(`/api/orders/${orderId}/upload-receipt`, {
         method: "POST",
         headers: {

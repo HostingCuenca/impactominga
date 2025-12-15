@@ -131,7 +131,14 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
       password
     } = req.body;
 
+    console.log("[completeCheckoutWithPassword] Starting checkout for:", email);
+    console.log("[completeCheckoutWithPassword] Data received:", {
+      raffleId, packageId, email, firstName, lastName, phone, idType, idNumber,
+      hasPassword: !!password, passwordLength: password?.length
+    });
+
     if (!password || password.length < 6) {
+      console.error("[completeCheckoutWithPassword] Password validation failed");
       return res.status(400).json({
         success: false,
         message: "La contraseña debe tener al menos 6 caracteres"
@@ -139,6 +146,7 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
     }
 
     // 1. Crear usuario
+    console.log("[completeCheckoutWithPassword] Step 1: Creating user...");
     const hashedPassword = await bcrypt.hash(password, 10);
     const userResult = await pool.query(
       `INSERT INTO users (email, password_hash, first_name, last_name, phone, id_type, id_number, role, status)
@@ -148,22 +156,28 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
     );
 
     const newUser = userResult.rows[0];
+    console.log("[completeCheckoutWithPassword] User created successfully:", newUser.id);
 
     // 2. Crear orden
+    console.log("[completeCheckoutWithPassword] Step 2: Creating order for user:", newUser.id);
     const order = await createOrderForUser(
       newUser.id,
       { raffleId, packageId, email, firstName, lastName, phone, idType, idNumber,
         shippingAddress, shippingCity, shippingProvince, paymentMethod, customerNotes }
     );
+    console.log("[completeCheckoutWithPassword] Order created successfully:", order.orderId);
 
     // 3. Generar token (auto-login)
+    console.log("[completeCheckoutWithPassword] Step 3: Generating JWT token...");
     const token = jwt.sign(
       { userId: newUser.id, email: newUser.email, role: newUser.role },
       process.env.JWT_SECRET || "secret",
       { expiresIn: "7d" }
     );
+    console.log("[completeCheckoutWithPassword] Token generated successfully");
 
     // 4. Enviar emails
+    console.log("[completeCheckoutWithPassword] Step 4: Sending emails...");
     await sendWelcomeEmail(newUser.email, newUser.first_name);
     await sendOrderConfirmationEmail(
       newUser.email,
@@ -173,6 +187,7 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
       order.raffleTitle,
       order.quantity
     );
+    console.log("[completeCheckoutWithPassword] Emails sent successfully");
 
     res.status(201).json({
       success: true,
@@ -181,9 +196,13 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
     });
 
   } catch (error: any) {
-    console.error("Error completing checkout:", error);
+    console.error("[completeCheckoutWithPassword] ERROR:", error);
+    console.error("[completeCheckoutWithPassword] Error stack:", error.stack);
+    console.error("[completeCheckoutWithPassword] Error code:", error.code);
+    console.error("[completeCheckoutWithPassword] Error message:", error.message);
 
     if (error.code === '23505') { // Duplicate key
+      console.error("[completeCheckoutWithPassword] Duplicate key error - User already exists");
       return res.status(400).json({
         success: false,
         message: "Este correo o cédula ya está registrado"
@@ -192,7 +211,7 @@ export async function completeCheckoutWithPassword(req: Request, res: Response) 
 
     res.status(500).json({
       success: false,
-      message: "Error al completar checkout"
+      message: error.message || "Error al completar checkout"
     });
   }
 }
@@ -277,7 +296,11 @@ async function createOrderForUser(userId: string, data: any) {
   const { raffleId, packageId, email, firstName, lastName, phone, idType, idNumber,
     shippingAddress, shippingCity, shippingProvince, paymentMethod, customerNotes } = data;
 
+  console.log("[createOrderForUser] Starting order creation for userId:", userId);
+  console.log("[createOrderForUser] Order data:", { raffleId, packageId, email });
+
   // Obtener información del sorteo
+  console.log("[createOrderForUser] Fetching raffle info for raffleId:", raffleId);
   const raffleQuery = await pool.query(
     `SELECT id, title, activity_number, ticket_price, status, total_tickets
      FROM raffles WHERE id = $1`,
@@ -285,24 +308,31 @@ async function createOrderForUser(userId: string, data: any) {
   );
 
   if (raffleQuery.rows.length === 0) {
+    console.error("[createOrderForUser] Raffle not found:", raffleId);
     throw new Error("Sorteo no encontrado");
   }
 
   const raffle = raffleQuery.rows[0];
+  console.log("[createOrderForUser] Raffle found:", { id: raffle.id, title: raffle.title, status: raffle.status });
 
   if (raffle.status !== 'active') {
+    console.error("[createOrderForUser] Raffle is not active:", raffle.status);
     throw new Error("El sorteo no está activo");
   }
 
   // Obtener información del paquete
   let pkg;
+  console.log("[createOrderForUser] Processing packageId:", packageId, "Type:", typeof packageId);
 
   // Verificar si es un paquete personalizado (custom-X)
   if (typeof packageId === 'string' && packageId.startsWith('custom-')) {
+    console.log("[createOrderForUser] Custom package detected");
     // Paquete personalizado - extraer cantidad del ID
     const customQuantity = parseInt(packageId.replace('custom-', ''));
+    console.log("[createOrderForUser] Custom quantity:", customQuantity);
 
     if (isNaN(customQuantity) || customQuantity < 3) {
+      console.error("[createOrderForUser] Invalid custom quantity:", customQuantity);
       throw new Error("Cantidad personalizada inválida (mínimo 3 números)");
     }
 
@@ -315,6 +345,7 @@ async function createOrderForUser(userId: string, data: any) {
 
     console.log(`[createOrderForUser] Paquete personalizado: ${customQuantity} números por $${pkg.price}`);
   } else {
+    console.log("[createOrderForUser] Predefined package - searching in database");
     // Paquete predefinido - buscar en la base de datos
     const packageQuery = await pool.query(
       `SELECT id, quantity, price FROM pricing_packages
@@ -322,7 +353,10 @@ async function createOrderForUser(userId: string, data: any) {
       [packageId, raffleId]
     );
 
+    console.log("[createOrderForUser] Package query result:", packageQuery.rows.length, "packages found");
+
     if (packageQuery.rows.length === 0) {
+      console.error("[createOrderForUser] Package not found:", { packageId, raffleId });
       throw new Error("Paquete no encontrado o no disponible");
     }
 
@@ -331,29 +365,36 @@ async function createOrderForUser(userId: string, data: any) {
   }
 
   // Calcular tickets vendidos desde la tabla tickets
+  console.log("[createOrderForUser] Checking ticket availability...");
   const ticketsSoldQuery = await pool.query(
     `SELECT COUNT(*) as sold FROM tickets WHERE raffle_id = $1 AND status = 'sold'`,
     [raffleId]
   );
   const ticketsSold = parseInt(ticketsSoldQuery.rows[0].sold || 0);
+  console.log("[createOrderForUser] Tickets sold:", ticketsSold, "Total tickets:", raffle.total_tickets);
 
   // Verificar disponibilidad de tickets
   const ticketsAvailable = raffle.total_tickets - ticketsSold;
+  console.log("[createOrderForUser] Tickets available:", ticketsAvailable, "Required:", pkg.quantity);
+
   if (ticketsAvailable < pkg.quantity) {
+    console.error("[createOrderForUser] Not enough tickets available");
     throw new Error(`Solo quedan ${ticketsAvailable} boletos disponibles`);
   }
 
   // Calcular montos
   const subtotal = parseFloat(pkg.price);
-  // const taxRate = 0.12; // 12% IVA - COMENTADO: IVA 0%
   const taxRate = 0; // IVA 0% - No aplica para tickets de rifa
   const tax = 0; // IVA 0%
   const total = subtotal; // Sin IVA
+  console.log("[createOrderForUser] Order totals - Subtotal:", subtotal, "Tax:", tax, "Total:", total);
 
   // Generar número de orden único
   const orderNumber = `IM-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+  console.log("[createOrderForUser] Generated order number:", orderNumber);
 
   // Crear orden
+  console.log("[createOrderForUser] Inserting order into database...");
   const orderResult = await pool.query(
     `INSERT INTO orders (
       order_number, user_id,
@@ -375,8 +416,10 @@ async function createOrderForUser(userId: string, data: any) {
   );
 
   const order = orderResult.rows[0];
+  console.log("[createOrderForUser] Order inserted successfully, ID:", order.id);
 
   // Crear order item
+  console.log("[createOrderForUser] Creating order item...");
   const unitPrice = subtotal / pkg.quantity;
   await pool.query(
     `INSERT INTO order_items (
@@ -388,6 +431,9 @@ async function createOrderForUser(userId: string, data: any) {
       pkg.quantity, unitPrice, subtotal
     ]
   );
+  console.log("[createOrderForUser] Order item created successfully");
+
+  console.log("[createOrderForUser] Order creation completed successfully!");
 
   return {
     orderId: order.id,

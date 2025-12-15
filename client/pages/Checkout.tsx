@@ -234,6 +234,18 @@ export default function Checkout() {
   const handleCreateWithPasswordSilently = async () => {
     // Crear usuario automáticamente con contraseña hardcodeada (sin modal)
     try {
+      console.log("[Checkout] handleCreateWithPasswordSilently - Starting...");
+      console.log("[Checkout] Data to send:", {
+        raffleId,
+        packageId,
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        idType: formData.idType,
+        idNumber: formData.idNumber,
+      });
+
       const response = await fetch("/api/checkout/with-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -245,18 +257,22 @@ export default function Checkout() {
         }),
       });
 
+      console.log("[Checkout] Response status:", response.status);
       const data = await response.json();
+      console.log("[Checkout] Response data:", data);
 
       if (data.success) {
+        console.log("[Checkout] Success! Order created:", data.data.order.orderId);
         // Auto-login
         login(data.data.token, data.data.user);
         navigate(`/order-confirmation?orderId=${data.data.order.orderId}`);
       } else {
+        console.error("[Checkout] Error response:", data.message);
         setError(data.message || "Error al crear cuenta");
         setLoading(false);
       }
     } catch (err) {
-      console.error("Error al crear cuenta automáticamente:", err);
+      console.error("[Checkout] Exception during handleCreateWithPasswordSilently:", err);
       setError("Error de conexión. Intenta nuevamente.");
       setLoading(false);
     }
