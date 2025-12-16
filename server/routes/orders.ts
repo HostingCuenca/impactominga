@@ -91,7 +91,7 @@ export async function smartCheckout(req: Request, res: Response) {
     }
 
     // Usuario NUEVO → Crear automáticamente con contraseña por defecto
-    const DEFAULT_PASSWORD = "minga2024";
+    const DEFAULT_PASSWORD = "password";
     const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10);
 
     const newUserResult = await pool.query(
@@ -127,11 +127,23 @@ export async function smartCheckout(req: Request, res: Response) {
       message: "Orden creada exitosamente"
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in smart checkout:", error);
+
+    // Manejo de errores específicos
+    let errorMessage = "Error al procesar checkout";
+
+    if (error.code === '23505') {
+      // Duplicate key - usuario ya existe (raro porque ya verificamos antes)
+      errorMessage = "Este email o cédula ya está registrado";
+    } else if (error.message) {
+      // Usar el mensaje de error específico del sistema
+      errorMessage = error.message;
+    }
+
     res.status(500).json({
       success: false,
-      message: "Error al procesar checkout"
+      message: errorMessage
     });
   }
 }
@@ -347,9 +359,10 @@ async function createOrderForUser(userId: string, data: any) {
     const customQuantity = parseInt(packageId.replace('custom-', ''));
     console.log("[createOrderForUser] Custom quantity:", customQuantity);
 
-    if (isNaN(customQuantity) || customQuantity < 3) {
+    // VALIDACIÓN DE MÍNIMO ELIMINADA - El frontend maneja esto
+    if (isNaN(customQuantity) || customQuantity < 1) {
       console.error("[createOrderForUser] Invalid custom quantity:", customQuantity);
-      throw new Error("Cantidad personalizada inválida (mínimo 3 números)");
+      throw new Error("Cantidad personalizada inválida");
     }
 
     // Calcular precio: $1 por boleto

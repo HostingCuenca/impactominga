@@ -41,16 +41,8 @@ export default function OrderConfirmation() {
 
   async function fetchOrderDetails() {
     try {
-      const token = localStorage.getItem("token");
-
-      const headers: any = {};
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`/api/orders/${orderId}`, {
-        headers,
-      });
+      // La ruta /api/orders/:id es pública, no requiere token
+      const response = await fetch(`/api/orders/${orderId}`);
 
       const data = await response.json();
 
