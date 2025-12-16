@@ -92,10 +92,10 @@ export function createServer() {
   app.post("/api/checkout/with-password", completeCheckoutWithPassword); // Usuario nuevo
   app.post("/api/checkout/with-login", completeCheckoutWithLogin); // Usuario existente
 
-  // Orders routes (GET - admin/contadora and customers can see their own)
-  app.get("/api/orders/my-orders", verifyToken, getMyOrders);
-  app.get("/api/orders", verifyToken, getOrders);
-  app.get("/api/orders/:id", getOrderById); // Público - permite ver confirmación de orden sin login
+  // Orders routes (GET - Públicas primero, luego protegidas)
+  app.get("/api/orders/my-orders", verifyToken, getMyOrders); // Ruta específica
+  app.get("/api/orders/:id", getOrderById); // Público - DEBE estar antes de la ruta genérica
+  app.get("/api/orders", verifyToken, getOrders); // Ruta genérica al final
 
   // Consulta pública de tickets por email (sin auth)
   app.post("/api/orders/consult-tickets", consultTicketsByEmail);

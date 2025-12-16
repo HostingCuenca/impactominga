@@ -212,7 +212,7 @@ export default function Checkout() {
 
       if (data.success) {
         // Orden creada exitosamente - El backend maneja todo automáticamente
-        navigate(`/order-confirmation?orderId=${data.data.orderId}`);
+        navigate(`/order-confirmation?orderId=${data.data.orderId}`)
       } else {
         // Cualquier error del backend
         setError(data.message || "Error al procesar checkout");
