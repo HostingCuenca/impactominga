@@ -63,22 +63,8 @@ export async function smartCheckout(req: Request, res: Response) {
     );
 
     if (existingUser.rows.length > 0) {
-      // Usuario YA EXISTE → Auto-login con contraseña hardcodeada y crear orden
+      // Usuario YA EXISTE → Crear orden directamente SIN validar contraseña
       const user = existingUser.rows[0];
-      const HARDCODED_PASSWORD = "impactopassword";
-
-      // Verificar contraseña hardcodeada
-      const isValidPassword = await bcrypt.compare(HARDCODED_PASSWORD, user.password_hash);
-
-      if (!isValidPassword) {
-        // Si la contraseña no coincide, pedir login manual (caso raro)
-        return res.status(200).json({
-          success: false,
-          requireLogin: true,
-          message: "Ya tienes una cuenta. Inicia sesión para continuar.",
-          email: user.email
-        });
-      }
 
       // Crear orden directamente para el usuario existente
       const order = await createOrderForUser(
@@ -104,11 +90,41 @@ export async function smartCheckout(req: Request, res: Response) {
       });
     }
 
-    // Usuario NUEVO → Pedir contraseña
-    return res.status(200).json({
-      success: false,
-      requirePassword: true,
-      message: "Crea una contraseña para ver el estado de tu orden"
+    // Usuario NUEVO → Crear automáticamente con contraseña por defecto
+    const DEFAULT_PASSWORD = "minga2024";
+    const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10);
+
+    const newUserResult = await pool.query(
+      `INSERT INTO users (email, password_hash, first_name, last_name, phone, id_type, id_number, role, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'customer', 'active')
+       RETURNING id, email, first_name, last_name, role, status`,
+      [email.toLowerCase(), hashedPassword, firstName, lastName, phone, idType, idNumber]
+    );
+
+    const newUser = newUserResult.rows[0];
+
+    // Crear orden para el nuevo usuario
+    const order = await createOrderForUser(
+      newUser.id,
+      { raffleId, packageId, email, firstName, lastName, phone, idType, idNumber,
+        shippingAddress, shippingCity, shippingProvince, paymentMethod, customerNotes }
+    );
+
+    // Enviar emails
+    await sendWelcomeEmail(newUser.email, newUser.first_name);
+    await sendOrderConfirmationEmail(
+      newUser.email,
+      newUser.first_name,
+      order.orderNumber,
+      order.total,
+      order.raffleTitle,
+      order.quantity
+    );
+
+    return res.status(201).json({
+      success: true,
+      data: order,
+      message: "Orden creada exitosamente"
     });
 
   } catch (error) {

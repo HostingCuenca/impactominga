@@ -160,11 +160,12 @@ export default function Checkout() {
     e.preventDefault();
     setError("");
 
-    // Validar que se aceptaron los términos y condiciones
-    if (!acceptedTerms) {
-      setError("Debes aceptar los términos y condiciones para continuar con la compra.");
-      return;
-    }
+    // Validación de términos y condiciones DESHABILITADA
+    // Descomentar las siguientes líneas para reactivar:
+    // if (!acceptedTerms) {
+    //   setError("Debes aceptar los términos y condiciones para continuar con la compra.");
+    //   return;
+    // }
 
     // Validar cédula ecuatoriana si el tipo de ID es cédula Y tiene 10 dígitos
     if (formData.idType === 'cedula' && formData.idNumber.length === 10) {
@@ -210,18 +211,10 @@ export default function Checkout() {
       const data = await response.json();
 
       if (data.success) {
-        // Order created successfully (user was authenticated OR auto-created)
+        // Orden creada exitosamente - El backend maneja todo automáticamente
         navigate(`/order-confirmation?orderId=${data.data.orderId}`);
-      } else if (data.requirePassword) {
-        // New user - auto-create with hardcoded password (no modal)
-        setLoading(true); // Mantener loading mientras se crea
-        await handleCreateWithPasswordSilently();
-        return; // No ejecutar setLoading(false) del finally
-      } else if (data.requireLogin) {
-        // Este caso ya no debería ocurrir porque el backend lo maneja automáticamente
-        // Pero lo dejamos por seguridad
-        setError("Ya tienes una cuenta. Por favor contáctanos si tienes problemas.");
       } else {
+        // Cualquier error del backend
         setError(data.message || "Error al procesar checkout");
       }
     } catch (err) {
@@ -748,7 +741,7 @@ export default function Checkout() {
 
                 <button
                   type="submit"
-                  disabled={loading || !acceptedTerms}
+                  disabled={loading}
                   className="w-full bg-black text-white py-4 font-oswald font-bold text-lg rounded-lg hover:bg-gray-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {loading ? "PROCESANDO..." : "CONTINUAR CON LA COMPRA"}
