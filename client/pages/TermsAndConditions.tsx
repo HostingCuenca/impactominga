@@ -48,12 +48,10 @@ export default function TermsAndConditions() {
               <div className="font-raleway text-gray-700 leading-relaxed space-y-3">
                 <p>Las campañas consisten en la venta de números digitales que permiten participar por premios tales como:</p>
                 <ul className="list-none space-y-2 ml-4">
-                  <li>🔧 Herramientas eléctricas</li>
-                  <li>🔋 Herramientas inalámbricas</li>
-                  <li>⚙️ Motores de 2 tiempos</li>
-                  <li>🛠️ Herramientas manuales</li>
+                  <li>🏍️ Motocicletas y vehículos</li>
+                  <li>🎁 Gift cards y bonos de compra</li>
                   <li>💸 Premios económicos</li>
-                  <li>🎁 Premios especiales</li>
+                  <li>🎉 Premios especiales</li>
                 </ul>
                 <p className="mt-4">
                   <strong>La compra de un número solo otorga participación, pero no garantiza ganar.</strong>

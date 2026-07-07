@@ -297,25 +297,9 @@ export async function createPrizes(req: Request, res: Response) {
         continue; // Saltar premios inválidos
       }
 
-      // Seleccionar un ticket ganador ALEATORIO disponible
-      const winnerTicketQuery = await pool.query(
-        `SELECT id FROM tickets
-         WHERE raffle_id = $1
-         AND status = 'available'
-         AND id NOT IN (
-           SELECT winner_ticket_id FROM prizes
-           WHERE raffle_id = $1 AND winner_ticket_id IS NOT NULL
-         )
-         ORDER BY RANDOM()
-         LIMIT 1`,
-        [id]
-      );
-
-      const winnerTicketId = winnerTicketQuery.rows[0]?.id || null;
-
-      if (!winnerTicketId) {
-        console.warn(`[createPrizes] No hay tickets disponibles para asignar al premio: ${name}`);
-      }
+      // El número ganador NO se predefine aquí: se asigna al sortear (ver assignWinnersToPrizes),
+      // eligiendo entre los boletos ya vendidos cuando se realice el sorteo real.
+      const winnerTicketId = null;
 
       const result = await pool.query(
         `INSERT INTO prizes (
@@ -1151,17 +1135,20 @@ export async function assignWinnersToPrizes(req: Request, res: Response) {
       });
     }
 
-    console.log(`[assignWinnersToPrizes] Assigning winners to ${prizesQuery.rows.length} prizes...`);
+    console.log(`[assignWinnersToPrizes] Sorteando ${prizesQuery.rows.length} premio(s) entre boletos VENDIDOS...`);
 
     let assignedCount = 0;
+    const results: any[] = [];
 
     for (const prize of prizesQuery.rows) {
-      // Seleccionar un ticket ganador ALEATORIO disponible
+      // Sortear al azar ÚNICAMENTE entre boletos ya VENDIDOS (el sorteo real, no un número predefinido)
       const winnerTicketQuery = await pool.query(
-        `SELECT id, ticket_number FROM tickets
-         WHERE raffle_id = $1
-         AND status = 'available'
-         AND id NOT IN (
+        `SELECT t.id, t.ticket_number, t.user_id, u.first_name, u.last_name, u.email
+         FROM tickets t
+         LEFT JOIN users u ON u.id = t.user_id
+         WHERE t.raffle_id = $1
+         AND t.status = 'sold'
+         AND t.id NOT IN (
            SELECT winner_ticket_id FROM prizes
            WHERE raffle_id = $1 AND winner_ticket_id IS NOT NULL
          )
@@ -1171,28 +1158,42 @@ export async function assignWinnersToPrizes(req: Request, res: Response) {
       );
 
       if (winnerTicketQuery.rows.length === 0) {
-        console.warn(`[assignWinnersToPrizes] No hay tickets disponibles para premio: ${prize.name}`);
+        console.warn(`[assignWinnersToPrizes] No hay boletos vendidos disponibles para sortear el premio: ${prize.name}`);
+        results.push({ prizeId: prize.id, prizeName: prize.name, assigned: false, reason: "No hay boletos vendidos disponibles" });
         continue;
       }
 
       const winnerTicket = winnerTicketQuery.rows[0];
 
-      // Asignar winner_ticket_id al premio
+      // Asignar ganador: marcar el ticket, revelar el premio
       await pool.query(
         `UPDATE prizes
-         SET winner_ticket_id = $1
+         SET winner_ticket_id = $1, status = 'unlocked', unlocked_at = NOW()
          WHERE id = $2`,
         [winnerTicket.id, prize.id]
       );
+      await pool.query(
+        `UPDATE tickets SET is_winner = TRUE, won_prize_id = $1 WHERE id = $2`,
+        [prize.id, winnerTicket.id]
+      );
 
-      console.log(`[assignWinnersToPrizes] ✅ Prize "${prize.name}" → Ticket #${winnerTicket.ticket_number}`);
+      console.log(`[assignWinnersToPrizes] ✅ Premio "${prize.name}" → Ticket #${winnerTicket.ticket_number} (${winnerTicket.email || "sin dueño"})`);
+      results.push({
+        prizeId: prize.id,
+        prizeName: prize.name,
+        assigned: true,
+        ticketNumber: winnerTicket.ticket_number,
+        winnerName: winnerTicket.first_name ? `${winnerTicket.first_name} ${winnerTicket.last_name}` : null,
+        winnerEmail: winnerTicket.email || null,
+      });
       assignedCount++;
     }
 
     res.json({
       success: true,
-      message: `${assignedCount} premios actualizados con números ganadores`,
-      assigned: assignedCount
+      message: `${assignedCount} premio(s) sorteados entre los boletos vendidos`,
+      assigned: assignedCount,
+      results,
     });
   } catch (error) {
     console.error("[assignWinnersToPrizes] Error:", error);

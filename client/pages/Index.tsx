@@ -204,58 +204,23 @@ export default function Index() {
 
       {/* Main Content - accounting for header height */}
       <main className="pt-24">
-        {/* Hero Section with Background Image */}
-        <section
-          id="juega"
-          className="relative bg-cover bg-top bg-no-repeat min-h-[600px] md:min-h-[700px] flex items-center"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4)), url('/nuevaportada.png')`,
-            backgroundPosition: 'bottom center',
-            backgroundSize: 'cover'
-          }}
-        >
-          <div className="max-w-7xl mx-auto px-4 py-16 w-full">
-            <div className="text-center text-white space-y-6">
-              {/* Main Title with text shadow for better readability */}
-              <h1
-                className="font-oswald text-5xl md:text-7xl font-bold tracking-wider"
-                style={{ textShadow: '3px 3px 6px rgba(0, 0, 0, 0.8)' }}
-              >
-                IMPACTO MINGA
-              </h1>
-
-              {/* Subtitle with golden color and text shadow */}
-              <h2
-                className="font-oswald text-2xl md:text-4xl italic text-[#d4af37] font-bold"
-                style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.9)' }}
-              >
-                ¡Gana las herramientas que <span className="text-white">POTENCIARÁN</span> tú trabajo!
-              </h2>
-
-              {/* CTA Button */}
-              <div className="pt-8">
-                <button
-                  onClick={() => {
-                    const element = document.getElementById('paquetes');
-                    element?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="bg-[#d4af37] hover:bg-[#b8941f] text-black font-oswald text-xl md:text-2xl font-bold px-12 py-4 rounded-lg transition transform hover:scale-105 shadow-2xl"
-                >
-                  ¡PARTICIPA Y GANA!
-                </button>
-              </div>
-
-              {/* Social Media Call to Action */}
-              <div className="pt-6">
-                <p
-                  className="font-raleway text-lg md:text-xl"
-                  style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}
-                >
-                  📱 Síguenos en nuestras <span className="font-bold text-[#d4af37]">redes sociales</span> para enterarte de todo
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Hero Section */}
+        <section id="juega" className="bg-black">
+          <button
+            type="button"
+            onClick={() => {
+              const element = document.getElementById('paquetes');
+              element?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="block w-full"
+            aria-label="Ir a paquetes"
+          >
+            <img
+              src="/banner2.png"
+              alt="Impacto Minga - 2 premios, 2 ganadores: Moto Scrambler 300 y Gift Card $700 en Casa INGCO Tena"
+              className="w-full h-auto object-contain"
+            />
+          </button>
         </section>
 
         {/* CADA TICKET TE ACERCA A GANAR Section */}
@@ -285,41 +250,41 @@ export default function Index() {
 
               {/* Category Cards */}
               <div className="md:col-span-3 grid md:grid-cols-3 gap-6">
-                {/* Card 1 - Herramientas Eléctricas */}
+                {/* Card 1 - Moto Scrambler 300 */}
                 <div className="bg-gray-700/50 backdrop-blur-sm border-2 border-gray-600 rounded-lg p-6 hover:border-[#d4af37] transition group">
                   <div className="text-center space-y-4">
-                    <div className="text-5xl mb-4">⚡</div>
+                    <div className="text-5xl mb-4">🏍️</div>
                     <h3 className="font-oswald text-xl font-bold text-white group-hover:text-[#d4af37] transition">
-                      Herramientas Eléctricas
+                      Moto Scrambler 300
                     </h3>
                     <p className="text-gray-300 font-raleway text-sm">
-                      Potencia y precisión para cada proyecto
+                      La moto que potenciará tu camino
                     </p>
                   </div>
                 </div>
 
-                {/* Card 2 - Herramientas Inalámbricas */}
+                {/* Card 2 - Gift Card Casa INGCO Tena */}
                 <div className="bg-gray-700/50 backdrop-blur-sm border-2 border-gray-600 rounded-lg p-6 hover:border-[#d4af37] transition group">
                   <div className="text-center space-y-4">
-                    <div className="text-5xl mb-4">🔋</div>
+                    <div className="text-5xl mb-4">🎁</div>
                     <h3 className="font-oswald text-xl font-bold text-white group-hover:text-[#d4af37] transition">
-                      Herramientas Inalámbricas
+                      Gift Card $700
                     </h3>
                     <p className="text-gray-300 font-raleway text-sm">
-                      Libertad de movimiento sin límites
+                      Úsala en lo que necesites en Casa INGCO Tena
                     </p>
                   </div>
                 </div>
 
-                {/* Card 3 - Combos Profesionales */}
+                {/* Card 3 - 2 Premios, 2 Ganadores */}
                 <div className="bg-gray-700/50 backdrop-blur-sm border-2 border-gray-600 rounded-lg p-6 hover:border-[#d4af37] transition group">
                   <div className="text-center space-y-4">
-                    <div className="text-5xl mb-4">🧰</div>
+                    <div className="text-5xl mb-4">🏆</div>
                     <h3 className="font-oswald text-xl font-bold text-white group-hover:text-[#d4af37] transition">
-                      Combos Profesionales
+                      2 Premios, 2 Ganadores
                     </h3>
                     <p className="text-gray-300 font-raleway text-sm">
-                      Optimizan tú tiempo
+                      Más oportunidades de ganar
                     </p>
                   </div>
                 </div>
@@ -328,22 +293,85 @@ export default function Index() {
           </div>
         </section>
 
-        {/* Banner Image */}
-        <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <div className="max-w-7xl mx-auto">
-            <div className="relative overflow-hidden rounded-lg bg-gray-200 shadow-xl">
-              <img
-                src={raffle.bannerUrl}
-                alt={raffle.title}
-                className="w-full h-auto object-contain md:object-cover md:h-[500px] md:object-right"
-              />
-            </div>
-          </div>
-        </section>
-
         {/* Blessed Numbers Section */}
         {raffle && (
           <BlessedNumbers raffleId={raffle.id} />
+        )}
+
+        {/* Premios Carousel */}
+        {prizes.length > 0 && (
+          <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+            <div className="max-w-6xl mx-auto">
+              <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-8">
+                PREMIOS A SORTEAR
+              </h2>
+
+              <div ref={galleryRef} className="relative">
+                <div className="overflow-hidden rounded-lg bg-black shadow-xl">
+                  <div className="relative w-full aspect-[1844/853] bg-black">
+                    <img
+                      src={prizes[currentSlide]?.imageUrl}
+                      alt={prizes[currentSlide]?.name}
+                      className="w-full h-full object-contain"
+                    />
+
+                    {/* Gallery Controls - centrados en la imagen */}
+                    <button
+                      onClick={previousSlide}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition backdrop-blur-sm"
+                      aria-label="Premio anterior"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+
+                    <button
+                      onClick={nextSlide}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition backdrop-blur-sm"
+                      aria-label="Siguiente premio"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
+
+                  {/* Premio Info - debajo de la imagen, no la invade */}
+                  <div className="bg-gradient-to-b from-black to-gray-900 p-6">
+                    <h3 className="font-oswald text-2xl md:text-3xl font-bold text-white mb-2">
+                      {prizes[currentSlide]?.name}
+                    </h3>
+                    <p className="font-raleway text-white/90 mb-2">
+                      {prizes[currentSlide]?.description}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-raleway font-semibold ${
+                        prizes[currentSlide]?.unlockStatus === 'unlocked'
+                          ? 'bg-green-500 text-white'
+                          : 'bg-yellow-500 text-black'
+                      }`}>
+                        {prizes[currentSlide]?.unlockStatus === 'unlocked' ? '🔓 Desbloqueado' : '🔒 Bloqueado'}
+                      </span>
+                      <span className="text-white/80 font-raleway text-sm">
+                        Se desbloquea al vender {prizes[currentSlide]?.unlockThreshold} boletos
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Slide Indicators */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {prizes.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`h-3 rounded-full transition ${
+                        index === currentSlide ? "bg-[#d4af37] w-8" : "bg-gray-300 w-3"
+                      }`}
+                      aria-label={`Ir al premio ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Pricing Section */}
@@ -395,81 +423,6 @@ export default function Index() {
             </div>
           </div>
         </section>
-
-        {/* Premios Carousel */}
-        {prizes.length > 0 && (
-          <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
-            <div className="max-w-6xl mx-auto">
-              <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-8">
-                HERRAMIENTAS A SORTEAR
-              </h2>
-
-              <div ref={galleryRef} className="relative">
-                <div className="relative h-96 md:h-[500px] overflow-hidden rounded-lg bg-gray-100">
-                  <img
-                    src={prizes[currentSlide]?.imageUrl}
-                    alt={prizes[currentSlide]?.name}
-                    className="w-full h-full object-cover"
-                  />
-
-                  {/* Premio Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <h3 className="font-oswald text-2xl md:text-3xl font-bold text-white mb-2">
-                      {prizes[currentSlide]?.name}
-                    </h3>
-                    <p className="font-raleway text-white/90 mb-2">
-                      {prizes[currentSlide]?.description}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-raleway font-semibold ${
-                        prizes[currentSlide]?.unlockStatus === 'unlocked'
-                          ? 'bg-green-500 text-white'
-                          : 'bg-yellow-500 text-black'
-                      }`}>
-                        {prizes[currentSlide]?.unlockStatus === 'unlocked' ? '🔓 Desbloqueado' : '🔒 Bloqueado'}
-                      </span>
-                      <span className="text-white/80 font-raleway text-sm">
-                        Se desbloquea al vender {prizes[currentSlide]?.unlockThreshold} boletos
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gallery Controls */}
-                <button
-                  onClick={previousSlide}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition backdrop-blur-sm"
-                  aria-label="Premio anterior"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-
-                <button
-                  onClick={nextSlide}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition backdrop-blur-sm"
-                  aria-label="Siguiente premio"
-                >
-                  <ChevronRight size={24} />
-                </button>
-
-                {/* Slide Indicators */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {prizes.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`h-3 rounded-full transition ${
-                        index === currentSlide ? "bg-[#d4af37] w-8" : "bg-gray-300 w-3"
-                      }`}
-                      aria-label={`Ir al premio ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
 
         {/* Limited Quantities Section */}
         <section className="bg-white py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
@@ -808,7 +761,7 @@ export default function Index() {
                 <div className="relative bg-gray-100">
                   <img
                     src="/ganador2.png"
-                    alt="Ganador con Caja de Herramientas"
+                    alt="Ganador de una actividad anterior"
                     className="w-full h-auto object-cover"
                   />
                 </div>
@@ -987,7 +940,7 @@ export default function Index() {
                   Primera Actividad
                 </h3>
                 <p className="text-gray-600 font-raleway">
-                  Estrena nuestra primera rifa y ten la oportunidad de ganar herramientas profesionales
+                  Participa en este sorteo y ten la oportunidad de ganar la Moto Scrambler 300 o la Gift Card de $700
                 </p>
               </div>
 
@@ -1007,7 +960,7 @@ export default function Index() {
                   Premios Garantizados
                 </h3>
                 <p className="text-gray-600 font-raleway">
-                  Herramientas de calidad profesional que potenciarán tu trabajo
+                  Una moto increíble y una gift card de $700 te están esperando
                 </p>
               </div>
             </div>

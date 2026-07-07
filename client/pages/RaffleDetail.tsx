@@ -15,7 +15,8 @@ import {
   X,
   Save,
   Star,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Shuffle
 } from "lucide-react";
 
 interface Raffle {
@@ -415,6 +416,46 @@ export default function RaffleDetail() {
     } catch (error) {
       console.error("Error:", error);
       alert("Error al eliminar premio");
+    }
+  }
+
+  async function handleDrawWinners() {
+    if (
+      !confirm(
+        "Esto sorteará al azar, entre los boletos YA VENDIDOS, el número ganador de cada premio que aún no tenga uno asignado. Esta acción no se puede deshacer. ¿Continuar?"
+      )
+    )
+      return;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`/api/raffles/${id}/assign-winners`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const details = (data.results || [])
+          .map((r: any) =>
+            r.assigned
+              ? `${r.prizeName}: boleto #${r.ticketNumber}${r.winnerName ? ` (${r.winnerName})` : ""}`
+              : `${r.prizeName}: ${r.reason}`
+          )
+          .join("\n");
+        alert(`${data.message}${details ? `\n\n${details}` : ""}`);
+        loadRaffleData();
+      } else {
+        alert(data.message || "Error al sortear ganadores");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al sortear ganadores");
     }
   }
 
@@ -916,13 +957,23 @@ export default function RaffleDetail() {
                   Premios Progresivos
                 </h3>
                 {(user?.role === "super_admin" || user?.role === "admin") && (
-                  <button
-                    onClick={() => setShowPrizeForm(!showPrizeForm)}
-                    className="flex items-center gap-2 bg-[#d4af37] hover:bg-[#c4a037] text-black font-raleway font-semibold px-4 py-2 rounded-lg transition"
-                  >
-                    {showPrizeForm ? <X size={18} /> : <Plus size={18} />}
-                    {showPrizeForm ? "Cancelar" : "Agregar Premio"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleDrawWinners}
+                      className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white font-raleway font-semibold px-4 py-2 rounded-lg transition"
+                      title="Sortea al azar el número ganador entre los boletos ya vendidos"
+                    >
+                      <Shuffle size={18} />
+                      Sortear Ganadores
+                    </button>
+                    <button
+                      onClick={() => setShowPrizeForm(!showPrizeForm)}
+                      className="flex items-center gap-2 bg-[#d4af37] hover:bg-[#c4a037] text-black font-raleway font-semibold px-4 py-2 rounded-lg transition"
+                    >
+                      {showPrizeForm ? <X size={18} /> : <Plus size={18} />}
+                      {showPrizeForm ? "Cancelar" : "Agregar Premio"}
+                    </button>
+                  </div>
                 )}
               </div>
 

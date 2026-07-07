@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Trophy, Lock, TrendingUp, Gift, DollarSign } from "lucide-react";
+import { Sparkles, Trophy, Gift, DollarSign } from "lucide-react";
 
 interface Prize {
   id: string;
@@ -65,7 +65,7 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
     );
   }
 
-  if (!data || (data.revealedPrizes.length === 0 && data.lockedPrizes.length === 0)) {
+  if (!data || data.revealedPrizes.length === 0) {
     return null;
   }
 
@@ -86,23 +86,13 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
               Números Afortunados
             </span>
           </div>
-          {/*
           <h2 className="font-oswald text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             ACTIVIDAD #{data.raffle.activityNumber}
           </h2>
-          */}
-          <h2 className="font-oswald text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-            ACTIVIDAD #001
-          </h2>
 
-          <p className="text-xl text-gray-700 font-raleway mb-8">
-            Sorteo 500 items
-          </p>
-          {/*
           <p className="text-xl text-gray-700 font-raleway mb-8">
             {data.raffle.title}
           </p>
-*/}
           {/* Progress Bar */}
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-between text-sm font-raleway text-gray-600 mb-2">
@@ -216,70 +206,6 @@ export default function BlessedNumbers({ raffleId }: BlessedNumbersProps) {
                         </p>
                       </div>
                     )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Locked Prizes */}
-        {data.lockedPrizes.length > 0 && (
-          <div>
-            <div className="flex items-center gap-3 mb-8">
-              <Lock className="w-8 h-8 text-gray-500" />
-              <h3 className="font-oswald text-3xl font-bold text-gray-900">
-                PRÓXIMOS PREMIOS A REVELAR
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {data.lockedPrizes.map((prize) => (
-                <div
-                  key={prize.id}
-                  className="bg-white border-2 border-gray-300 rounded-xl p-6 relative overflow-hidden shadow-md"
-                >
-                  {/* Lock overlay */}
-                  <div className="absolute inset-0 bg-gray-100/80 backdrop-blur-sm flex items-center justify-center z-10">
-                    <Lock className="w-12 h-12 text-gray-400" />
-                  </div>
-
-                  {/* Prize Image (blurred) */}
-                  {prize.imageUrl && (
-                    <div className="mb-4 rounded-lg overflow-hidden">
-                      <img
-                        src={prize.imageUrl}
-                        alt={prize.name}
-                        className="w-full h-32 object-cover blur-sm"
-                      />
-                    </div>
-                  )}
-
-                  {/* Prize Info */}
-                  <div className="text-center">
-                    <div className="inline-flex items-center gap-2 bg-gray-200 px-3 py-1 rounded-full mb-2">
-                      {prize.cashValue ? (
-                        <span className="font-oswald text-sm font-bold text-gray-600">
-                          ${prize.cashValue.toFixed(0)}
-                        </span>
-                      ) : (
-                        <span className="font-oswald text-sm font-bold text-gray-600">
-                          {prize.productName}
-                        </span>
-                      )}
-                    </div>
-
-                    <h4 className="font-oswald text-lg font-bold text-gray-700 mb-3">
-                      {prize.name}
-                    </h4>
-
-                    {/* Unlock Threshold */}
-                    <div className="flex items-center justify-center gap-2 text-gray-600">
-                      <TrendingUp className="w-4 h-4" />
-                      <span className="font-raleway text-sm">
-                        Se revela al {prize.unlockThreshold}%
-                      </span>
-                    </div>
                   </div>
                 </div>
               ))}

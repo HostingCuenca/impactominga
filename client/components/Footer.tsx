@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <h3 className="font-oswald font-bold text-xl mb-6 text-[#d4af37]">Impacto Minga</h3>
             <p className="text-gray-300 font-raleway text-sm leading-relaxed mb-4">
-              Premios que cambian tu manera de trabajar. Herramientas profesionales al alcance de todos por solo $1 USD.
+              Premios que cambian tu vida, al alcance de todos por solo $1 USD.
             </p>
             <p className="text-gray-400 font-raleway text-xs">
               Organizador: Minga AurumEC
@@ -104,7 +104,7 @@ export default function Footer() {
           >
             Torisoftt
           </a>
-          {' '}- Impacto Minga © 2025
+          {' '}- Impacto Minga © {new Date().getFullYear()}
         </p>
       </div>
     </footer>

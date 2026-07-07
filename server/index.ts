@@ -63,6 +63,7 @@ export function createServer() {
   app.post("/api/raffles/:id/packages", verifyToken, requireAdmin, createPackages);
   app.post("/api/raffles/:id/prizes", verifyToken, requireAdmin, createPrizes);
   app.post("/api/raffles/:id/generate-tickets", verifyToken, requireAdmin, generateTickets);
+  app.post("/api/raffles/:id/assign-winners", verifyToken, requireAdmin, assignWinnersToPrizes);
 
   // Raffles routes (PUT, PATCH, DELETE - admin only)
   app.put("/api/raffles/:id", verifyToken, requireAdmin, updateRaffle);
