@@ -1513,12 +1513,11 @@ export async function consultTicketsByEmail(req: Request, res: Response) {
     // Para cada orden, obtener sus tickets y el título del sorteo
     const ordersWithTickets = await Promise.all(
       ordersQuery.rows.map(async (order) => {
-        // Obtener tickets de la orden
+        // Obtener tickets de la orden (filtrando por la orden específica, no solo por el sorteo)
         const ticketsQuery = await pool.query(
           `SELECT t.id, t.ticket_number, t.status, t.is_winner, t.raffle_id
            FROM tickets t
-           JOIN order_items oi ON oi.raffle_id = t.raffle_id
-           WHERE oi.order_id = $1 AND t.status = 'sold'
+           WHERE t.order_id = $1 AND t.status = 'sold'
            ORDER BY t.ticket_number ASC`,
           [order.id]
         );
