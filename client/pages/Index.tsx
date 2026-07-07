@@ -102,23 +102,28 @@ export default function Index() {
     loadRaffleData();
   }, []);
 
+  // Slides del carrusel de premios: banner de diseño + foto real de la moto + banner de cierre (2 premios, 2 ganadores)
+  const carouselSlides = prizes.length > 0
+    ? [{ ...prizes[0], imageUrl: "/banner1.png" }, ...prizes]
+    : [];
+
   // Auto-play del carrusel de premios
   useEffect(() => {
-    if (prizes.length === 0) return;
+    if (carouselSlides.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === prizes.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1));
     }, 5000); // Cambia cada 5 segundos
 
     return () => clearInterval(interval);
-  }, [prizes.length]);
+  }, [carouselSlides.length]);
 
   const previousSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? prizes.length - 1 : prev - 1));
+    setCurrentSlide((prev) => (prev === 0 ? carouselSlides.length - 1 : prev - 1));
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === prizes.length - 1 ? 0 : prev + 1));
+    setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1));
   };
 
   const handleAddToCart = (pkg: Package) => {
@@ -299,7 +304,7 @@ export default function Index() {
         )}
 
         {/* Premios Carousel */}
-        {prizes.length > 0 && (
+        {carouselSlides.length > 0 && (
           <section className="bg-white py-12 px-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
             <div className="max-w-6xl mx-auto">
               <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-8">
@@ -310,8 +315,8 @@ export default function Index() {
                 <div className="overflow-hidden rounded-lg bg-black shadow-xl">
                   <div className="relative w-full aspect-[1844/853] bg-black">
                     <img
-                      src={prizes[currentSlide]?.imageUrl}
-                      alt={prizes[currentSlide]?.name}
+                      src={carouselSlides[currentSlide]?.imageUrl}
+                      alt={carouselSlides[currentSlide]?.name}
                       className="w-full h-full object-contain"
                     />
 
@@ -336,17 +341,17 @@ export default function Index() {
                   {/* Premio Info - debajo de la imagen, no la invade */}
                   <div className="bg-gradient-to-b from-black to-gray-900 p-6">
                     <h3 className="font-oswald text-2xl md:text-3xl font-bold text-white mb-2">
-                      {prizes[currentSlide]?.name}
+                      {carouselSlides[currentSlide]?.name}
                     </h3>
                     <p className="font-raleway text-white/90 mb-2">
-                      {prizes[currentSlide]?.description}
+                      {carouselSlides[currentSlide]?.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Slide Indicators */}
                 <div className="flex justify-center gap-2 mt-6">
-                  {prizes.map((_, index) => (
+                  {carouselSlides.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
