@@ -67,7 +67,7 @@ export default function Checkout() {
         if (packageId && packageId.startsWith('custom-')) {
           // Custom package - create virtual package object
           const customQuantity = parseInt(packageId.replace('custom-', ''));
-          if (!isNaN(customQuantity) && customQuantity >= 3) {
+          if (!isNaN(customQuantity) && customQuantity >= 1) {
             setSelectedPackage({
               id: packageId,
               quantity: customQuantity,
@@ -76,7 +76,7 @@ export default function Checkout() {
               discountPercentage: 0,
             });
           } else {
-            setError("Cantidad personalizada inválida (mínimo 3 números)");
+            setError("Cantidad personalizada inválida (mínimo 1 número)");
           }
         } else {
           // Load packages from API

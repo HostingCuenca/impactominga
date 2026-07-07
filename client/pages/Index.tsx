@@ -40,7 +40,7 @@ export default function Index() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [email, setEmail] = useState("");
   const [consultEmail, setConsultEmail] = useState("");
-  const [quantity, setQuantity] = useState(3);
+  const [quantity, setQuantity] = useState(1);
   const [consultLoading, setConsultLoading] = useState(false);
   const [consultResults, setConsultResults] = useState<any>(null);
   const [consultError, setConsultError] = useState("");
@@ -556,7 +556,7 @@ export default function Index() {
                   {/* Selector visual con botones grandes */}
                   <div className="flex items-center justify-center gap-4 mb-4">
                     <button
-                      onClick={() => setQuantity(Math.max(3, quantity - 1))}
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="w-14 h-14 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-2xl transition shadow-lg hover:shadow-xl"
                       aria-label="Disminuir cantidad"
                     >
@@ -566,9 +566,9 @@ export default function Index() {
                     <div className="bg-white border-4 border-[#d4af37] rounded-lg px-8 py-4 min-w-[120px]">
                       <input
                         type="number"
-                        min="3"
+                        min="1"
                         value={quantity}
-                        onChange={(e) => setQuantity(Math.max(3, parseInt(e.target.value) || 3))}
+                        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                         className="w-full text-center font-oswald text-4xl font-bold text-black bg-transparent outline-none"
                       />
                       <p className="text-center text-xs text-gray-500 font-raleway mt-1">números</p>
