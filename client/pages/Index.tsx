@@ -341,18 +341,6 @@ export default function Index() {
                     <p className="font-raleway text-white/90 mb-2">
                       {prizes[currentSlide]?.description}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-raleway font-semibold ${
-                        prizes[currentSlide]?.unlockStatus === 'unlocked'
-                          ? 'bg-green-500 text-white'
-                          : 'bg-yellow-500 text-black'
-                      }`}>
-                        {prizes[currentSlide]?.unlockStatus === 'unlocked' ? '🔓 Desbloqueado' : '🔒 Bloqueado'}
-                      </span>
-                      <span className="text-white/80 font-raleway text-sm">
-                        Se desbloquea al vender {prizes[currentSlide]?.unlockThreshold} boletos
-                      </span>
-                    </div>
                   </div>
                 </div>
 

@@ -89,6 +89,10 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-12 pt-8 text-center">
           <p className="text-gray-400 mb-4 font-raleway">Una iniciativa de</p>
           <p className="font-oswald font-bold text-lg text-[#d4af37]">MINGA AURUM EC</p>
+          <p className="text-gray-400 mt-4 font-raleway">
+            Con el apoyo de <span className="text-white font-semibold">Casa INGCO</span> y{" "}
+            <span className="text-white font-semibold">Kronos Gym Tena</span>
+          </p>
         </div>
       </div>
 
