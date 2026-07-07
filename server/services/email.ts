@@ -71,7 +71,7 @@ export async function sendPasswordResetEmail(
             <p>Si no solicitaste restablecer tu contraseña, puedes ignorar este correo.</p>
           </div>
           <div class="footer">
-            <p>© 2025 Impacto Minga. Todos los derechos reservados.</p>
+            <p>© ${new Date().getFullYear()} Impacto Minga. Todos los derechos reservados.</p>
           </div>
         </div>
       </body>
@@ -333,7 +333,7 @@ export async function sendOrderConfirmationEmail(
 
           <!-- Footer -->
           <div class="footer">
-            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">© ${new Date().getFullYear()} <span class="footer-gold">IMPACTO MINGA</span></p>
             <p style="margin: 5px 0;">Todos los derechos reservados</p>
             <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
             <p style="margin: 5px 0;">
@@ -602,7 +602,7 @@ export async function sendOrderApprovedEmail(
 
           <!-- Footer -->
           <div class="footer">
-            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">© ${new Date().getFullYear()} <span class="footer-gold">IMPACTO MINGA</span></p>
             <p style="margin: 5px 0;">Todos los derechos reservados</p>
             <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
             <p style="margin: 5px 0;">
@@ -687,7 +687,7 @@ export async function sendOrderRejectedEmail(
             <a href="${process.env.FRONTEND_URL}/dashboard/my-orders" class="button">Ver Mi Cuenta</a>
           </div>
           <div class="footer">
-            <p>© 2025 Impacto Minga. Todos los derechos reservados.</p>
+            <p>© ${new Date().getFullYear()} Impacto Minga. Todos los derechos reservados.</p>
           </div>
         </div>
       </body>
@@ -818,15 +818,6 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
             <p>¡Gracias por unirte a <strong style="color: #d4af37;">Impacto Minga</strong>!</p>
             <p>Estamos emocionados de tenerte con nosotros.</p>
 
-            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-left: 4px solid #d4af37; padding: 20px; border-radius: 8px; margin: 25px 0; text-align: center;">
-              <p style="margin: 0; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: #000000;">
-                ✅ TU CUENTA HA SIDO CREADA EXITOSAMENTE
-              </p>
-              <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
-                Ya puedes participar en nuestros sorteos y cambiar vidas
-              </p>
-            </div>
-
             <p style="margin-top: 25px; font-size: 15px; line-height: 1.8;">
               Cada número que compras no solo te da la oportunidad de ganar increíbles premios, sino que también contribuye a una causa noble. <strong style="color: #d4af37;">¡Gracias por ser parte del cambio!</strong>
             </p>
@@ -856,7 +847,7 @@ export async function sendWelcomeEmail(email: string, firstName: string) {
 
           <!-- Footer -->
           <div class="footer">
-            <p style="margin: 5px 0;">© 2025 <span class="footer-gold">IMPACTO MINGA</span></p>
+            <p style="margin: 5px 0;">© ${new Date().getFullYear()} <span class="footer-gold">IMPACTO MINGA</span></p>
             <p style="margin: 5px 0;">Todos los derechos reservados</p>
             <p style="margin: 15px 0 5px 0;">Síguenos en nuestras redes:</p>
             <p style="margin: 5px 0;">

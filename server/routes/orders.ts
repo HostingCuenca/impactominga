@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import { sendOrderApprovedEmail, sendOrderRejectedEmail, sendOrderConfirmationEmail, sendWelcomeEmail } from "../services/email";
 import { checkAndRevealPrizes } from "../jobs/prize-revelation";
 
@@ -90,9 +91,10 @@ export async function smartCheckout(req: Request, res: Response) {
       });
     }
 
-    // Usuario NUEVO → Crear automáticamente con contraseña por defecto
-    const DEFAULT_PASSWORD = "password";
-    const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10);
+    // Usuario NUEVO → Crear automáticamente con una contraseña aleatoria (no se comparte por correo).
+    // El cliente puede acceder luego usando "¿Olvidaste tu contraseña?" o consultando sus boletos por email.
+    const randomPassword = crypto.randomBytes(24).toString("hex");
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
     const newUserResult = await pool.query(
       `INSERT INTO users (email, password_hash, first_name, last_name, phone, id_type, id_number, role, status)
