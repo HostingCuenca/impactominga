@@ -90,8 +90,24 @@ export default function Footer() {
           <p className="text-gray-400 mb-4 font-raleway">Una iniciativa de</p>
           <p className="font-oswald font-bold text-lg text-[#d4af37]">MINGA AURUM EC</p>
           <p className="text-gray-400 mt-4 font-raleway">
-            Con el apoyo de <span className="text-white font-semibold">Casa INGCO</span> y{" "}
-            <span className="text-white font-semibold">Kronos Gym Tena</span>
+            Con el apoyo de{" "}
+            <a
+              href="https://www.facebook.com/share/14nUjCER1r2/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white font-semibold hover:text-[#d4af37] transition"
+            >
+              Casa INGCO
+            </a>{" "}
+            y{" "}
+            <a
+              href="https://www.instagram.com/kronos_gym_?igsh=Zjc0YWpmeGsxaW02"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white font-semibold hover:text-[#d4af37] transition"
+            >
+              Kronos Gym Tena
+            </a>
           </p>
         </div>
       </div>
