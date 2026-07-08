@@ -126,22 +126,6 @@ export default function Index() {
     setCurrentSlide((prev) => (prev === carouselSlides.length - 1 ? 0 : prev + 1));
   };
 
-  const handleAddToCart = (pkg: Package) => {
-    if (!raffle) return;
-
-    addItem({
-      raffleId: raffle.id,
-      raffleTitle: raffle.title,
-      packageId: pkg.id,
-      packageName: `${pkg.quantity} números`,
-      price: pkg.price,
-      ticketCount: pkg.quantity,
-    });
-
-    // Redirect to cart
-    navigate("/cart");
-  };
-
   const handleConsultTickets = async () => {
     if (!consultEmail || !consultEmail.includes('@')) {
       setConsultError("Por favor ingresa un correo válido");
@@ -367,56 +351,6 @@ export default function Index() {
           </section>
         )}
 
-        {/* Pricing Section */}
-        <section id="paquetes" className="bg-gray-100 py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-          <div className="max-w-7xl mx-auto">
-            <h2 className="font-oswald text-3xl md:text-4xl font-bold text-center text-black mb-12">
-              SELECCIONA TU PAQUETE
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[...packages].sort((a, b) => b.quantity - a.quantity).map((pkg, index) => (
-                <div
-                  key={pkg.id}
-                  className={`rounded-lg overflow-hidden transition transform hover:scale-105 animate-fade-in-up ${
-                    pkg.isMostPopular
-                      ? "ring-2 ring-[#d4af37] shadow-xl"
-                      : "bg-white shadow-md"
-                  }`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  {pkg.isMostPopular && (
-                    <div className="bg-[#d4af37] text-black text-center py-2 font-oswald font-bold text-sm">
-                      ★ MÁS POPULAR ★
-                    </div>
-                  )}
-
-                  <div className={`p-6 ${pkg.isMostPopular ? "bg-white" : ""}`}>
-                    <h3 className="font-oswald text-3xl font-bold text-center text-black mb-4">
-                      x{pkg.quantity}
-                    </h3>
-                    <p className="font-oswald text-2xl font-bold text-center text-[#d4af37] mb-2">
-                      ${pkg.price.toFixed(2)}
-                    </p>
-                    {pkg.discountPercentage > 0 && (
-                      <p className="text-center text-sm text-gray-500 font-raleway mb-4">
-                        ¡Ahorra {pkg.discountPercentage}%!
-                      </p>
-                    )}
-
-                    <button
-                      onClick={() => handleAddToCart(pkg)}
-                      className="w-full bg-black text-white py-3 font-oswald font-bold text-base rounded-lg hover:bg-gray-800 transition"
-                    >
-                      COMPRAR
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Limited Quantities Section */}
         <section className="bg-white py-16 px-4 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
           <div className="max-w-6xl mx-auto">
@@ -538,7 +472,7 @@ export default function Index() {
             </div>
 
             {/* Additional Purchase Form */}
-            <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 max-w-md mx-auto border-2 border-[#d4af37] shadow-xl">
+            <div id="paquetes" className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8 max-w-md mx-auto border-2 border-[#d4af37] shadow-xl">
               <h3 className="font-oswald text-3xl font-bold text-black mb-2 text-center">
                 Compra Personalizada
               </h3>
@@ -585,7 +519,7 @@ export default function Index() {
 
                   <div className="bg-[#d4af37] bg-opacity-20 rounded-lg p-4 text-center">
                     <p className="text-sm text-gray-700 font-raleway mb-1">
-                      💡 <strong>Mínimo 3 números</strong> · Cada número = $1 USD
+                      💡 <strong>Mínimo 1 número</strong> · Cada número = $1 USD
                     </p>
                     <p className="font-oswald text-2xl font-bold text-black">
                       Total: ${(quantity * 1).toFixed(2)} USD
@@ -1144,14 +1078,14 @@ export default function Index() {
               </h3>
             </div>
 
-            {/* YouTube Embed - Vertical (9:16 aspect ratio) */}
+            {/* Vimeo Embed - Vertical */}
             <div className="relative bg-black" style={{ paddingBottom: '177.78%', height: 0 }}>
               <iframe
                 className="absolute top-0 left-0 w-full h-full"
-                src="https://www.youtube.com/embed/74PDAoSzwGk"
+                src="https://player.vimeo.com/video/1208074806?h=b97264e8af&autoplay=1&title=0&byline=0&portrait=0"
                 title="Tutorial de Compra - Impacto Minga"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
                 allowFullScreen
               ></iframe>
             </div>
