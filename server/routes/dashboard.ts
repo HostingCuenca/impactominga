@@ -12,27 +12,23 @@ export async function getDashboardStats(req: Request, res: Response) {
     const statsQuery = await pool.query(`
       SELECT
         -- Órdenes
-        COUNT(DISTINCT o.id) FILTER (WHERE o.created_at >= DATE_TRUNC('month', CURRENT_DATE)) as total_orders_month,
-        COUNT(DISTINCT o.id) FILTER (WHERE o.status IN ('pending_verification', 'approved')) as pending_orders,
+        (SELECT COUNT(*) FROM orders WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)) as total_orders_month,
+        (SELECT COUNT(*) FROM orders WHERE status IN ('pending_verification', 'approved')) as pending_orders,
 
         -- Ingresos del mes
-        COALESCE(SUM(o.total) FILTER (WHERE o.status IN ('approved', 'completed') AND o.created_at >= DATE_TRUNC('month', CURRENT_DATE)), 0) as revenue_month,
+        (SELECT COALESCE(SUM(total), 0) FROM orders WHERE status IN ('approved', 'completed') AND created_at >= DATE_TRUNC('month', CURRENT_DATE)) as revenue_month,
 
         -- Ingresos totales
-        COALESCE(SUM(o.total) FILTER (WHERE o.status IN ('approved', 'completed')), 0) as revenue_total,
+        (SELECT COALESCE(SUM(total), 0) FROM orders WHERE status IN ('approved', 'completed')) as revenue_total,
 
         -- Sorteos activos
-        COUNT(DISTINCT r.id) FILTER (WHERE r.status = 'active') as active_raffles,
+        (SELECT COUNT(*) FROM raffles WHERE status = 'active' AND deleted_at IS NULL) as active_raffles,
 
         -- Tickets vendidos hoy
-        COUNT(DISTINCT t.id) FILTER (WHERE t.status = 'sold' AND t.assigned_at >= CURRENT_DATE) as tickets_sold_today,
+        (SELECT COUNT(*) FROM tickets WHERE status = 'sold' AND assigned_at >= CURRENT_DATE) as tickets_sold_today,
 
         -- Nuevos usuarios del mes
-        COUNT(DISTINCT u.id) FILTER (WHERE u.created_at >= DATE_TRUNC('month', CURRENT_DATE)) as new_users_month
-      FROM orders o
-      FULL OUTER JOIN raffles r ON r.deleted_at IS NULL
-      FULL OUTER JOIN tickets t ON t.raffle_id = r.id
-      FULL OUTER JOIN users u ON u.deleted_at IS NULL
+        (SELECT COUNT(*) FROM users WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) AND deleted_at IS NULL) as new_users_month
     `);
 
     const stats = statsQuery.rows[0];
