@@ -650,15 +650,15 @@ export default function Checkout() {
                         </div>
                         <div className="flex justify-between items-center border-b border-blue-200 pb-2">
                           <span className="font-semibold text-blue-900"># de Cuenta:</span>
-                          <span className="text-blue-800 font-mono font-bold text-lg">2213830211</span>
+                          <span className="text-blue-800 font-mono font-bold text-lg">2214722715</span>
                         </div>
                         <div className="flex justify-between items-center border-b border-blue-200 pb-2">
                           <span className="font-semibold text-blue-900">Titular:</span>
-                          <span className="text-blue-800">MINGA TIPANLUIZA RICHARD DUFFER</span>
+                          <span className="text-blue-800">Minga Aurumec S.A.S</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-semibold text-blue-900">C.I:</span>
-                          <span className="text-blue-800 font-mono">1501260440</span>
+                          <span className="font-semibold text-blue-900">RUC:</span>
+                          <span className="text-blue-800 font-mono">1591728948001</span>
                         </div>
                       </div>
                       <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded p-3">

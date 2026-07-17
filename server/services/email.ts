@@ -299,9 +299,9 @@ export async function sendOrderConfirmationEmail(
                 <div class="bank-details">
                   <p><strong>Banco:</strong> BANCO PICHINCHA</p>
                   <p><strong>Tipo de Cuenta:</strong> CUENTA AHORRO</p>
-                  <p><strong># de Cuenta:</strong> <span class="account-number">2213830211</span></p>
-                  <p><strong>Titular:</strong> MINGA TIPANLUIZA RICHARD DUFFER</p>
-                  <p><strong>C.I:</strong> 1501260440</p>
+                  <p><strong># de Cuenta:</strong> <span class="account-number">2214722715</span></p>
+                  <p><strong>Titular:</strong> Minga Aurumec S.A.S</p>
+                  <p><strong>RUC:</strong> 1591728948001</p>
                   <p><strong>Monto:</strong> <span class="total-amount">$${total.toFixed(2)}</span></p>
                   <p style="background: #fff9e6; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
                     <strong>⚠️ Referencia/Asunto:</strong> <span style="font-family: monospace; font-size: 18px; font-weight: bold; color: #000;">${orderReference}</span>

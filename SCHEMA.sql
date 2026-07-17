@@ -658,7 +658,7 @@ INSERT INTO system_settings (key, value, description, category) VALUES
   ('tax_rate', '12.00', 'Tasa de IVA (%)', 'payment'),
   ('whatsapp_number', '593987654321', 'Número de WhatsApp para contacto', 'contact'),
   ('whatsapp_message_template', 'Hola, necesito ayuda con mi orden {order_number}', 'Plantilla de mensaje WhatsApp', 'contact'),
-  ('bank_account_1', '{"bank":"Banco Pichincha","account":"2100123456","type":"Ahorros","holder":"Impacto Minga"}', 'Cuenta bancaria principal', 'payment'),
+  ('bank_account_1', '{"bank":"Banco Pichincha","account":"2214722715","type":"Ahorros","holder":"Minga Aurumec S.A.S","ruc":"1591728948001"}', 'Cuenta bancaria principal', 'payment'),
   ('receipt_counter', '0', 'Contador de comprobantes', 'receipts'),
   ('company_name', 'Impacto Minga', 'Nombre de la empresa', 'company'),
   ('company_address', 'Ecuador', 'Dirección de la empresa', 'company'),

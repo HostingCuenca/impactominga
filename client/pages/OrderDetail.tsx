@@ -732,7 +732,7 @@ export default function OrderDetail() {
                   value={bankAccountUsed}
                   onChange={(e) => setBankAccountUsed(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg font-raleway focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Ej: Banco Pichincha - 2100123456"
+                  placeholder="Ej: Banco Pichincha - 2214722715"
                 />
               </div>
 
